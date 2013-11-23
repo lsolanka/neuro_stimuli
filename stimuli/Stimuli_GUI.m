@@ -227,6 +227,54 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+% --- the function get all parameters set in the GUI
+function par=getParam(handles)
+    par.spatFreq = str2double(get(handles.spatFreq,'String'));
+    par.cyclesPerSecond = str2double(get(handles.tempFreq,'String'));
+    par.timeStatic = str2double(get(handles.staticTime,'String'));
+    par.timeDrift = str2double(get(handles.driftTime,'String'));
+    % 
+    % % the button ones too....
+    switch get(get(handles.numOrientationPanel,'SelectedObject'),'Tag')
+        case 'numOrient8',  par.numOrient = 8;
+        otherwise, par.numOrient = 16;
+    end
+
+    switch get(get(handles.gaborPanel,'SelectedObject'),'Tag')
+        case 'gaborOn',  par.gabor = 1;
+        otherwise, par.gabor = 0;
+    end
+
+    switch get(get(handles.stimStylePanel,'SelectedObject'),'Tag')
+        case 'stimBW',  par.stimStyle = 0;
+        otherwise, par.stimStyle = 1;
+    end
+
+    switch get(get(handles.movingModePanel,'SelectedObject'),'Tag')
+        case 'biDirectional',  par.biDirectional = 1;
+        otherwise, par.biDirectional = 0;
+    end
+
+    switch get(get(handles.orientSeqPanel,'SelectedObject'),'Tag')
+        case 'randomSeq',  par.randomOrder = 1;
+        otherwise, par.randomOrder = 0;
+    end
+
+
+    % and those from the parameters box.....
+    par.screenDist = str2double(get(handles.distScreen,'String'));
+    par.screenWidth = str2double(get(handles.widthScreen,'String'));
+    par.screenNumber = str2double(get(handles.numberScreen,'String'));
+    par.imageSize = str2double(get(handles.sizeImage,'String'));
+    par.gaussStDev = str2double(get(handles.stdevGauss,'String'));
+    par.gaussTrim = str2double(get(handles.trimGauss,'String'));
+    par.timeIntro = str2double(get(handles.introTime,'String'));
+
+    % and the save path
+    par.currentPath = get(handles.savePath,'String');
+
+
+
 % --- Executes on button press in runGratings.
 function runGratings_Callback(hObject, eventdata, handles)
 % hObject    handle to runGratings (see GCBO)
@@ -238,62 +286,13 @@ function runGratings_Callback(hObject, eventdata, handles)
 
 
 % % initialise the variables
-spatFreq = str2double(get(handles.spatFreq,'String'));
-cyclesPerSecond = str2double(get(handles.tempFreq,'String'));
-timeStatic = str2double(get(handles.staticTime,'String'));
-timeDrift = str2double(get(handles.driftTime,'String'));
-% 
-% % the button ones too....
-switch get(get(handles.numOrientationPanel,'SelectedObject'),'Tag')
-    case 'numOrient8',  numOrient = 8;
-    otherwise, numOrient = 16;
-end
-
-switch get(get(handles.gaborPanel,'SelectedObject'),'Tag')
-    case 'gaborOn',  gabor = 1;
-    otherwise, gabor = 0;
-end
-
-switch get(get(handles.stimStylePanel,'SelectedObject'),'Tag')
-    case 'stimBW',  stimStyle = 0;
-    otherwise, stimStyle = 1;
-end
-
-switch get(get(handles.movingModePanel,'SelectedObject'),'Tag')
-    case 'biDirectional',  biDirectional = 1;
-    otherwise, biDirectional = 0;
-end
-
-switch get(get(handles.orientSeqPanel,'SelectedObject'),'Tag')
-    case 'randomSeq',  randomOrder = 1;
-    otherwise, randomOrder = 0;
-end
+par=getParam(handles);
 
 
-% and those from the parameters box.....
-screenDist = str2double(get(handles.distScreen,'String'));
-screenWidth = str2double(get(handles.widthScreen,'String'));
-screenNumber = str2double(get(handles.numberScreen,'String'));
-imageSize = str2double(get(handles.sizeImage,'String'));
-gaussStDev = str2double(get(handles.stdevGauss,'String'));
-gaussTrim = str2double(get(handles.trimGauss,'String'));
-timeIntro = str2double(get(handles.introTime,'String'));
-
-% and the save path
-currentPath = get(handles.savePath,'String');
-
-
-showStim(numOrient, cyclesPerSecond, spatFreq, gabor, ...
-    imageSize, stimStyle, timeIntro, timeStatic, timeDrift, biDirectional,...
-    randomOrder, screenNumber, screenDist, gaussStDev, gaussTrim, screenWidth,...
-    currentPath);
-
-
-
-
-
-
-
+showStim(par.numOrient, par.cyclesPerSecond, par.spatFreq, par.gabor, ...
+    par.imageSize, par.stimStyle, par.timeIntro, par.timeStatic, par.timeDrift, par.biDirectional,...
+    par.randomOrder, par.screenNumber, par.screenDist, par.gaussStDev, par.gaussTrim, par.screenWidth,...
+    par.currentPath);
 
 
 
@@ -302,8 +301,8 @@ function runRetinotopy_Callback(hObject, eventdata, handles)
 % hObject    handle to runRetinotopy (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-retinotopy4x3;
+par=getParam(handles);
+retinotropy4x3;
 
 
 % --- Executes on button press in retinotopy4x3.
