@@ -281,28 +281,31 @@ function runGratings_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+    % initialise the variables
+    par=getParam(handles);
 
-%-----------------NON-STANDARD GUI CODE ------------------------
-
-
-% % initialise the variables
-par=getParam(handles);
-
-
-showStim(par.numOrient, par.cyclesPerSecond, par.spatFreq, par.gabor, ...
-    par.imageSize, par.stimStyle, par.timeIntro, par.timeStatic, par.timeDrift, par.biDirectional,...
-    par.randomOrder, par.screenNumber, par.screenDist, par.gaussStDev, par.gaussTrim, par.screenWidth,...
-    par.currentPath);
+    par.nCols = 1
+    par.nRows = 1
+    showStimuli(par)
 
 
 
 % --- Executes on button press in runRetinotopy.
 function runRetinotopy_Callback(hObject, eventdata, handles)
-% hObject    handle to runRetinotopy (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-par=getParam(handles);
-retinotropy4x3;
+    % hObject    handle to runRetinotopy (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    par = getParam(handles);
+    ret4x3State = get(handles.retinotopy4x3, 'Value')
+    if ret4x3State == 1
+        par.nCols = 4
+        par.nRows = 3
+    else
+        par.nCols = 6
+        par.nRows = 4
+    end 
+
+    showStimuli(par)
 
 
 % --- Executes on button press in retinotopy4x3.
@@ -315,7 +318,7 @@ function retinotopy4x3_Callback(hObject, eventdata, handles)
 
 
 % --- Executes on button press in retinotopyOther.
-function retinotopyOther_Callback(hObject, eventdata, handles)
+function retinotopy6x4_Callback(hObject, eventdata, handles)
 % hObject    handle to retinotopyOther (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
