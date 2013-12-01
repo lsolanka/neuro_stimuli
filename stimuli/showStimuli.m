@@ -25,15 +25,13 @@ function showStimuli(par)
     gaussStDev      = par.gaussStDev   
     gaussTrim       = par.gaussTrim    
     screenWidth     = par.screenWidth  
+    currentPath     = par.currentPath
     nCols           = par.nCols
     nRows           = par.nRows
 
 
     % Define Half-Size of the grating image.
     texsize = imageSize / 2;
-
-    % current path, to save the data
-    currentPath = '/Users/Tom/Desktop/Testing Visual Stim/'; % set path to save files
 
 
     %---------------------- CREATE ORIENTATION ORDER -------------------------
@@ -313,47 +311,47 @@ function showStimuli(par)
 
     % add the order of orientations, with & without drifts to the eventSeq list
 
-    % if biDirectional == 0    
-    %     orientEventList = cell(1,2*numOrient+1);
-    %     for i =[1:numOrient]
-    %         orientEventList{2*i-1} = strcat(num2str(orientList(i)),'-Static');
-    %         orientEventList{2*i} = strcat(num2str(orientList(i)),'-Drift');
-    %     end
-    %     orientEventList{2*numOrient+1} = 'End';
-    % else
-    %     orientEventList = cell(1,3*numOrient+1);
-    %     for i =[1:numOrient]
-    %         orientEventList{3*i-2} = strcat(num2str(orientList(i)),'-Static');
-    %         orientEventList{3*i-1} = strcat(num2str(orientList(i)),'-Drift');
-    %         orientEventList{3*i} = strcat(num2str(orientList(i)),'-Reverse');
-    %     end
-    %     
-    %     orientEventList{3*numOrient+1} = 'End';
-    % end
-    % 
-    % % combine order or orientations with other events
-    % total = length(eventSeqDummy)+length(orientEventList);
-    % eventSeq = cell(1,total);
-    % for i = [1:total]
-    %     if i <= length(eventSeqDummy)
-    %         eventSeq{i} = eventSeqDummy{i};
-    %     else
-    %         eventSeq{i} = orientEventList{i-length(eventSeqDummy)};
-    %     end
-    % end
-    % 
-    % % write eventSeq and timeSeq to a .txt file
-    % % this has the form 'eventSeq', new line, a line with all the events in
-    % % order, then new line, 'timeSeq', and a line with all times in order
-    % file_name = cat(2,currentPath,'visual_stim_prtcl.txt');
-    % fid = fopen (file_name,'w');
-    % C = eventSeq.';
-    % fprintf(fid,'%s\n','eventSeq');
-    % fprintf(fid, '"%s"\t', C{:});
-    % fprintf(fid,'\n%s\n','timeSeq');
-    % fprintf(fid,'%3.4f\t',timeSeq);
-    % fclose(fid);
-    % 
+     if biDirectional == 0    
+         orientEventList = cell(1,2*numOrient+1);
+         for i =[1:numOrient]
+             orientEventList{2*i-1} = strcat(num2str(orientList(i)),'-Static');
+             orientEventList{2*i} = strcat(num2str(orientList(i)),'-Drift');
+         end
+         orientEventList{2*numOrient+1} = 'End';
+     else
+         orientEventList = cell(1,3*numOrient+1);
+         for i =[1:numOrient]
+             orientEventList{3*i-2} = strcat(num2str(orientList(i)),'-Static');
+             orientEventList{3*i-1} = strcat(num2str(orientList(i)),'-Drift');
+             orientEventList{3*i} = strcat(num2str(orientList(i)),'-Reverse');
+         end
+         
+         orientEventList{3*numOrient+1} = 'End';
+     end
+     
+     % combine order or orientations with other events
+     total = length(eventSeqDummy)+length(orientEventList);
+     eventSeq = cell(1,total);
+     for i = [1:total]
+         if i <= length(eventSeqDummy)
+             eventSeq{i} = eventSeqDummy{i};
+         else
+             eventSeq{i} = orientEventList{i-length(eventSeqDummy)};
+         end
+     end
+     
+     % write eventSeq and timeSeq to a .txt file
+     % this has the form 'eventSeq', new line, a line with all the events in
+     % order, then new line, 'timeSeq', and a line with all times in order
+     file_name = cat(2,currentPath,'visual_stim_prtcl.txt');
+     fid = fopen (file_name,'w');
+     C = eventSeq.';
+     fprintf(fid,'%s\n','eventSeq');
+     fprintf(fid, '"%s"\t', C{:});
+     fprintf(fid,'\n%s\n','timeSeq');
+     fprintf(fid,'%3.4f\t',timeSeq);
+     fclose(fid);
+     
 
     % We're done!
     return;
