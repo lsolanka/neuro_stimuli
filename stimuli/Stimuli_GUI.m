@@ -78,13 +78,9 @@ set(handles.trimGauss,'String','0.05');
 set(handles.introTime,'String','0.5');
 
 % save path
-set(handles.savePath,'String','/Users/Tom/Desktop/Testing Visual Stim/');
+set(handles.savePath,'String','./');
 
 % for the chronic stim
-set(handles.chronicDriftTime,'String','5');
-set(handles.chronicStaticTime,'String','0.5');
-set(handles.chronicSpatFreq,'String','0.03');
-set(handles.chronicTempFreq,'String','1');
 set(handles.chronicOrient,'String','0');
 
 
@@ -673,144 +669,11 @@ end
 
 
 
-function chronicDriftTime_Callback(hObject, eventdata, handles)
-% hObject    handle to chronicDriftTime (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of chronicDriftTime as text
-%        str2double(get(hObject,'String')) returns contents of chronicDriftTime as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function chronicDriftTime_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to chronicDriftTime (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function chronicStaticTime_Callback(hObject, eventdata, handles)
-% hObject    handle to chronicStaticTime (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of chronicStaticTime as text
-%        str2double(get(hObject,'String')) returns contents of chronicStaticTime as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function chronicStaticTime_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to chronicStaticTime (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function chronicSpatFreq_Callback(hObject, eventdata, handles)
-% hObject    handle to chronicSpatFreq (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of chronicSpatFreq as text
-%        str2double(get(hObject,'String')) returns contents of chronicSpatFreq as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function chronicSpatFreq_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to chronicSpatFreq (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function chronicTempFreq_Callback(hObject, eventdata, handles)
-% hObject    handle to chronicTempFreq (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of chronicTempFreq as text
-%        str2double(get(hObject,'String')) returns contents of chronicTempFreq as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function chronicTempFreq_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to chronicTempFreq (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
 % --- Executes on button press in runChronic.
 function runChronic_Callback(hObject, eventdata, handles)
 % hObject    handle to runChronic (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-%-----------------NON-STANDARD GUI CODE ------------------------
-
-
-% % initialise the variables
-spatFreq = str2double(get(handles.chronicSpatFreq,'String'));
-cyclesPerSecond = str2double(get(handles.chronicTempFreq,'String'));
-timeStatic = str2double(get(handles.chronicStaticTime,'String'));
-timeDrift = str2double(get(handles.chronicDriftTime,'String'));
-orient = str2double(get(handles.chronicOrient,'String'));
-
- 
-% % the button ones too....
-
-switch get(get(handles.chronicGaborPanel,'SelectedObject'),'Tag')
-    case 'chronicGaborOn',  gabor = 1;
-    otherwise, gabor = 0;
-end
-
-switch get(get(handles.chronicStimStylePanel,'SelectedObject'),'Tag')
-    case 'chronicStimBW',  stimStyle = 0;
-    otherwise, stimStyle = 1;
-end
-
-switch get(get(handles.chronicMovingModePanel,'SelectedObject'),'Tag')
-    case 'chronicBiDirectional',  biDirectional = 1;
-    otherwise, biDirectional = 0;
-end
-
-
-
-% and those from the parameters box.....
-screenDist = str2double(get(handles.distScreen,'String'));
-screenWidth = str2double(get(handles.widthScreen,'String'));
-screenNumber = str2double(get(handles.numberScreen,'String'));
-imageSize = str2double(get(handles.sizeImage,'String'));
-gaussStDev = str2double(get(handles.stdevGauss,'String'));
-gaussTrim = str2double(get(handles.trimGauss,'String'));
-timeIntro = str2double(get(handles.introTime,'String'));
-
-% and the save path
-currentPath = get(handles.savePath,'String');
 
 showChronicStim(cyclesPerSecond, spatFreq, gabor, ...
     imageSize, stimStyle, timeIntro, timeStatic, timeDrift, biDirectional,...
