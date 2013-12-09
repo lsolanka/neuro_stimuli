@@ -266,6 +266,9 @@ function par=getParam(handles)
     par.gaussTrim = str2double(get(handles.trimGauss,'String'));
     par.timeIntro = str2double(get(handles.introTime,'String'));
 
+    par.chronicOrient=str2double(get(handles.chronicOrient,'String'));
+
+    
     % and the save path
     par.currentPath = get(handles.savePath,'String');
 
@@ -282,6 +285,7 @@ function runGratings_Callback(hObject, eventdata, handles)
 
     par.nCols = 1
     par.nRows = 1
+    par.chronicOrient=0;
     showStimuli(par)
 
 
@@ -292,6 +296,7 @@ function runRetinotopy_Callback(hObject, eventdata, handles)
     % eventdata  reserved - to be defined in a future version of MATLAB
     % handles    structure with handles and user data (see GUIDATA)
     par = getParam(handles);
+    par.chronicOrient=0;
     ret4x3State = get(handles.retinotopy4x3, 'Value')
     if ret4x3State == 1
         par.nCols = 4
@@ -675,10 +680,20 @@ function runChronic_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-showChronicStim(cyclesPerSecond, spatFreq, gabor, ...
-    imageSize, stimStyle, timeIntro, timeStatic, timeDrift, biDirectional,...
-    screenNumber, screenDist, gaussStDev, gaussTrim, screenWidth,...
-    currentPath, orient)
+
+par=getParam(handles);
+
+par.numOrient=1;
+par.timeDrift=900;  
+par.nCols=1;
+par.nRows=1;
+
+
+showStimuli(par);
+%showChronicStim(cyclesPerSecond, spatFreq, gabor, ...
+%    imageSize, stimStyle, timeIntro, timeStatic, timeDrift, biDirectional,...
+%    screenNumber, screenDist, gaussStDev, gaussTrim, screenWidth,...
+%    currentPath, orient)
 
 
 

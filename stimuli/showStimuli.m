@@ -10,6 +10,7 @@
 function showStimuli(par)
 
     numOrient       = par.numOrient
+    chronicOrient   = par.chronicOrient
     cyclesPerSecond = par.cyclesPerSecond
     spatFreq        = par.spatFreq     
     gabor           = par.gabor        
@@ -29,6 +30,7 @@ function showStimuli(par)
     nCols           = par.nCols
     nRows           = par.nRows
 
+    
 
     % Define Half-Size of the grating image.
     texsize = imageSize / 2;
@@ -36,7 +38,7 @@ function showStimuli(par)
 
     %---------------------- CREATE ORIENTATION ORDER -------------------------
     incOrient = 360/numOrient;
-    orientList = [0:numOrient-1]*incOrient;
+    orientList = [0:numOrient-1]*incOrient+chronicOrient;
 
     % if there is random order selected, permute the order
     if randomOrder == 1
