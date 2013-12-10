@@ -8,6 +8,8 @@
 %
 
 function showStimuli(par)
+    
+    c=clock;
 
     numOrient       = par.numOrient
     chronicOrient   = par.chronicOrient
@@ -38,8 +40,10 @@ function showStimuli(par)
 
     %---------------------- CREATE ORIENTATION ORDER -------------------------
     incOrient = 360/numOrient;
-    orientList = 90+[0:numOrient-1]*incOrient+chronicOrient;
+    orientList = 90+[0:numOrient-1]*incOrient+chronicOrient; %offset 90 deg to have zero up
 
+    orientList_print=orientList-90; %to print correct values in the file
+    
     % if there is random order selected, permute the order
     if randomOrder == 1
         newOrder = randperm(numOrient);
@@ -69,7 +73,7 @@ function showStimuli(par)
             gray=white / 2;
         end
         
-        
+        Screen('Preference', 'VisualDebugLevel', 1); % to avoid the white welcome screen
         [w screenRect] = Screen('OpenWindow', screenNumber, gray);
 
         
@@ -326,16 +330,16 @@ function showStimuli(par)
      if biDirectional == 0    
          orientEventList = cell(1,2*numOrient+1);
          for i =[1:numOrient]
-             orientEventList{2*i-1} = strcat(num2str(orientList(i)),'-Static');
-             orientEventList{2*i} = strcat(num2str(orientList(i)),'-Drift');
+             orientEventList{2*i-1} = strcat(num2str(orientList_print(i)),' -Static');
+             orientEventList{2*i} = strcat(num2str(orientList_print(i)),' -Drift');
          end
          orientEventList{2*numOrient+1} = 'End';
      else
          orientEventList = cell(1,3*numOrient+1);
          for i =[1:numOrient]
-             orientEventList{3*i-2} = strcat(num2str(orientList(i)),'-Static');
-             orientEventList{3*i-1} = strcat(num2str(orientList(i)),'-Drift');
-             orientEventList{3*i} = strcat(num2str(orientList(i)),'-Reverse');
+             orientEventList{3*i-2} = strcat(num2str(orientList_print(i)),'\tStatic');
+             orientEventList{3*i-1} = strcat(num2str(orientList_print(i)),'\tDrift');
+             orientEventList{3*i} = strcat(num2str(orientList_print(i)),'\tReverse');
          end
          
          orientEventList{3*numOrient+1} = 'End';
@@ -355,13 +359,23 @@ function showStimuli(par)
      % write eventSeq and timeSeq to a .txt file
      % this has the form 'eventSeq', new line, a line with all the events in
      % order, then new line, 'timeSeq', and a line with all times in order
-     file_name = cat(2,currentPath,'visual_stim_prtcl.txt');
+     
+     formatOut='yymmdd_HHMMSS';
+     
+     name1=datestr(c,formatOut);
+     
+     file_name = cat(2,currentPath,name1,'.txt');
      fid = fopen (file_name,'w');
-     C = eventSeq.';
-     fprintf(fid,'%s\n','eventSeq');
-     fprintf(fid, '"%s"\t', C{:});
-     fprintf(fid,'\n%s\n','timeSeq');
-     fprintf(fid,'%3.4f\t',timeSeq);
+     
+     fprintf(fid,'Time(s)\tOrient.(deg)-Type\n');
+     
+     kk=0;
+     while kk<length(timeSeq)
+        kk=kk+1;
+        fprintf(fid,'%3.4f\t%s\n',timeSeq(kk),eventSeq{kk});
+     end
+     
+
      fclose(fid);
      
 
