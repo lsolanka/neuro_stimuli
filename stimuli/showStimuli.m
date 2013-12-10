@@ -38,7 +38,7 @@ function showStimuli(par)
 
     %---------------------- CREATE ORIENTATION ORDER -------------------------
     incOrient = 360/numOrient;
-    orientList = [0:numOrient-1]*incOrient+chronicOrient;
+    orientList = 90+[0:numOrient-1]*incOrient+chronicOrient;
 
     % if there is random order selected, permute the order
     if randomOrder == 1
@@ -72,6 +72,16 @@ function showStimuli(par)
         
         [w screenRect] = Screen('OpenWindow', screenNumber, gray);
 
+        
+        % ADD THE TRIGGER HERE - Paolo. (Comment this if it runs on our
+        % laptops!
+        
+%         s = daq.createSession('ni');
+%         s.addDigitalChannel('Dev1', 'Port1/Line0:7', 'InputOnly');
+%         while (s.inputSingleScan < 1) 
+%           pause(0.001);
+%         end
+        
         % Create individual rectangles for the retinotopy
         screenWidth  = screenRect(3) - screenRect(1)
         screenHeight = screenRect(4) - screenRect(2)

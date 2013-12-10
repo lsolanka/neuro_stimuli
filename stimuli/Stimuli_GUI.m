@@ -71,7 +71,7 @@ set(handles.tempFreq,'String','1');
 % Parameters section
 set(handles.distScreen,'String','30');
 set(handles.widthScreen,'String','34');
-set(handles.numberScreen,'String','1');
+set(handles.numberScreen,'String','0');
 set(handles.sizeImage,'String','800');
 set(handles.stdevGauss,'String','40');
 set(handles.trimGauss,'String','0.05');
