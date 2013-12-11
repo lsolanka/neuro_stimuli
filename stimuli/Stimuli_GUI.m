@@ -78,13 +78,17 @@ set(handles.trimGauss,'String','0.05');
 set(handles.introTime,'String','0.5');
 
 % save path
-set(handles.savePath,'String','./');
+set(handles.savePath,'String','./Data/');
+set(handles.fileSuffix,'String','');
 
 % for the chronic stim
 set(handles.chronicOrient,'String','0');
+set(handles.chronicTime,'String','60');
 
-
-
+% for the custom stim
+set(handles.customSeq,'String','');
+set(handles.customGreyTime,'String','0');
+set(handles.customBlackTime,'String','0');
 
 %---------------------END TOM-CODE------------------------------ 
 
@@ -266,11 +270,18 @@ function par=getParam(handles)
     par.gaussTrim = str2double(get(handles.trimGauss,'String'));
     par.timeIntro = str2double(get(handles.introTime,'String'));
 
+    % those for the chronic stim
     par.chronicOrient=str2double(get(handles.chronicOrient,'String'));
-
+    par.chronicTime=str2double(get(handles.chronicTime,'String'));
+    
+    % those for Custom stim
+    par.customSeq=str2double(get(handles.customSeq,'String'));
+    par.customGreyTime=str2double(get(handles.customGreyTime,'String'));
+    par.customBlackTime=str2double(get(handles.customBlackTime,'String'));
     
     % and the save path
     par.currentPath = get(handles.savePath,'String');
+    par.fileSuffix =get(handles.fileSuffix,'String');
 
 
 
@@ -684,7 +695,7 @@ function runChronic_Callback(hObject, eventdata, handles)
 par=getParam(handles);
 
 par.numOrient=1;
-par.timeDrift=900;  
+par.timeDrift=par.chronicTime;  
 par.nCols=1;
 par.nRows=1;
 

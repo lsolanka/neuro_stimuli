@@ -29,6 +29,7 @@ function showStimuli(par)
     gaussTrim       = par.gaussTrim    
     screenWidth     = par.screenWidth  
     currentPath     = par.currentPath
+    fileSuffix      = par.fileSuffix
     nCols           = par.nCols
     nRows           = par.nRows
 
@@ -42,7 +43,7 @@ function showStimuli(par)
     incOrient = 360/numOrient;
     orientList = 90+[0:numOrient-1]*incOrient+chronicOrient; %offset 90 deg to have zero up
 
-    orientList_print=orientList-90; %to print correct values in the file
+    
     
     % if there is random order selected, permute the order
     if randomOrder == 1
@@ -53,7 +54,8 @@ function showStimuli(par)
         end
         orientList = newList;
     end
-
+    
+    orientList_print=orientList-90; %to print correct values in the file
 
     %------------------ CALCULATE THE SPATIAL FREQUENCY IN PIXELS--------------
     % if the mouse is looking forward, the angle from the centre of the screen
@@ -363,8 +365,13 @@ function showStimuli(par)
      formatOut='yymmdd_HHMMSS';
      
      name1=datestr(c,formatOut);
+     namefolder=datestr(c,'yymmdd/');
      
-     file_name = cat(2,currentPath,name1,'.txt');
+     mkdir(currentPath,namefolder);
+     
+     currentPath=cat(2,currentPath,namefolder);
+     
+     file_name = cat(2,currentPath,name1,fileSuffix,'.txt');
      fid = fopen (file_name,'w');
      
      fprintf(fid,'Time(s)\tOrient.(deg)-Type\n');
