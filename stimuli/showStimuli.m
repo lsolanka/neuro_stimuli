@@ -82,11 +82,17 @@ function showStimuli(par)
         % ADD THE TRIGGER HERE - Paolo. (Comment this if it runs on our
         % laptops!
         
-%         s = daq.createSession('ni');
-%         s.addDigitalChannel('Dev1', 'Port1/Line0:7', 'InputOnly');
-%         while (s.inputSingleScan < 1) 
-%           pause(0.001);
-%         end
+         s = daq.createSession('ni');
+         s.addDigitalChannel('Dev1', 'Port1/Line0:7', 'InputOnly');
+         
+         a=0;
+         
+         while a<1 
+           pause(0.0005);
+           testt=s.inputSingleScan;
+           a=testt(end);
+           
+         end
         
         % Create individual rectangles for the retinotopy
         screenWidth  = screenRect(3) - screenRect(1)
