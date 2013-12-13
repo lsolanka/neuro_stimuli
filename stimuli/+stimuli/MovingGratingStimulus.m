@@ -1,5 +1,5 @@
 %
-%   AngleStimulus.m
+%   MovingGratingStimulus.m
 %
 %   A stimulus class identifier for angles.
 %
@@ -7,10 +7,10 @@
 %       Authors: Lukas Solanka, <lsolanka@gmail.com>
 %
 
-classdef AngleStimulus < stimuli.CustomStimulus
+classdef MovingGratingStimulus < stimuli.CustomStimulus
 
     methods
-        function obj = AngleStimulus(val)
+        function obj = MovingGratingStimulus(val)
             if (~isa(val, 'numeric') || numel(val) ~= 1)
                 msg = 'An angle must be a numeric value with one element';
                 e = MException('stimuli:AngleStimulus:InvalidValue', msg);
