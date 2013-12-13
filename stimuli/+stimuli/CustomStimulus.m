@@ -11,7 +11,7 @@
 %
 % Custom stimulus base class
 %
-classdef (Abstract) CustomStimulus < matlab.mixin.Heterogeneous
+classdef (Abstract) CustomStimulus < matlab.mixin.Heterogeneous & handle
 
     properties (Access = protected)
         value
@@ -21,11 +21,19 @@ classdef (Abstract) CustomStimulus < matlab.mixin.Heterogeneous
         function ret = getValue(obj)
             ret = obj.value;
         end
+
+    end
+
+    methods(Static)
+        function [x, y] = createCanvas(texsize, cyclesPerPixel)
+            p = ceil(1/cyclesPerPixel);
+            [x,y] = meshgrid(-texsize - p:texsize + 2*p, -texsize - p:texsize + 2*p);
+        end
     end
 
 
     methods (Abstract)
-        startTime = draw()
+        startTime = draw(obj, dstRect)
     end
 
 end

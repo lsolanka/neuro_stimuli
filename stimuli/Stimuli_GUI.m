@@ -682,10 +682,12 @@ function runGratings_Callback(hObject, eventdata, handles)
     % initialise the variables
     par=getParam(handles);
 
-    par.nCols = 1
-    par.nRows = 1
-    par.chronicOrient=0;
-    showStimuli(par)
+    par.nCols = 1;
+    par.nRows = 1;
+    par.chronicOrient = 0;
+    par.stimulusDrawers = stimuli.calculateOrientations(...
+        par.numOrient, par.chronicOrient, par.randomOrder);
+    showStimuli(par);
 
 
 
