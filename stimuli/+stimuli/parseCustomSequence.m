@@ -40,7 +40,7 @@ function returnSequence = parseCustomSequence(seqStr)
             if (strcmp(s, 'b') || strcmp(s, 'g'))
                 returnSequence = [returnSequence stimuli.UniformStimulus(s)];
             else
-                throwInvalidValue(s);
+                throwInvalidCharValue(s);
             end
         else
             % Grating stimulus specified by an angle
@@ -50,12 +50,12 @@ function returnSequence = parseCustomSequence(seqStr)
     
 
 
-function throwInvalidValue(s)
-    id = 'stimuli:parseCursomSequence:InvalidValue';
-    msg = 'Cannot parse %s: it must be a single character or a numeric value';
+function throwInvalidCharValue(s)
+    id = 'stimuli:parseCustomSequence:InvalidValue';
+    msg = 'Cannot parse "%s": it must be one of "b", "g", or a number specifying an angle!';
     throw(MException(id, sprintf(msg, s)));
     
 function throwEmpty()
-    id = 'stimuli:parseCursomSequence:InvalidValue';
+    id = 'stimuli:parseCustomSequence:InvalidValue';
     msg = 'Custom sequence cannot be empty!';
     throw(MException(id, msg));

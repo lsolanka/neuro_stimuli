@@ -726,8 +726,12 @@ function runCustom_Callback(hObject, eventdata, handles)
             display(stim.getValue());
         end
     catch e
-        title = 'An error occurred when parsing the custom sequence string';
-        uiwait(errordlg(e.message, title, 'modal'))
+        if strcmp(e.identifier, 'stimuli:parseCustomSequence:InvalidValue')
+            title = 'An error occurred when parsing the custom sequence string';
+            uiwait(errordlg(e.message, title, 'modal'))
+        else
+            rethrow(e);
+        end
     end
    
 
