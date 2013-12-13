@@ -262,22 +262,22 @@ function par=getParam(handles)
 
 
     % and those from the parameters box.....
-    par.screenDist = str2double(get(handles.distScreen,'String'));
-    par.screenWidth = str2double(get(handles.widthScreen,'String'));
+    par.screenDist   = str2double(get(handles.distScreen,'String'));
+    par.screenWidth  = str2double(get(handles.widthScreen,'String'));
     par.screenNumber = str2double(get(handles.numberScreen,'String'));
-    par.imageSize = str2double(get(handles.sizeImage,'String'));
-    par.gaussStDev = str2double(get(handles.stdevGauss,'String'));
-    par.gaussTrim = str2double(get(handles.trimGauss,'String'));
-    par.timeIntro = str2double(get(handles.introTime,'String'));
+    par.imageSize    = str2double(get(handles.sizeImage,'String'));
+    par.gaussStDev   = str2double(get(handles.stdevGauss,'String'));
+    par.gaussTrim    = str2double(get(handles.trimGauss,'String'));
+    par.timeIntro    = str2double(get(handles.introTime,'String'));
 
     % those for the chronic stim
-    par.chronicOrient=str2double(get(handles.chronicOrient,'String'));
-    par.chronicTime=str2double(get(handles.chronicTime,'String'));
+    par.chronicOrient = str2double(get(handles.chronicOrient,'String'));
+    par.chronicTime   = str2double(get(handles.chronicTime,'String'));
     
     % those for Custom stim
-    par.customSeq=str2double(get(handles.customSeq,'String'));
-    par.customGreyTime=str2double(get(handles.customGreyTime,'String'));
-    par.customBlackTime=str2double(get(handles.customBlackTime,'String'));
+    par.customSeq       = get(handles.customSeq, 'String');
+    par.customGreyTime  = str2double(get(handles.customGreyTime, 'String'));
+    par.customBlackTime = str2double(get(handles.customBlackTime, 'String'));
     
     % and the save path
     par.currentPath = get(handles.savePath,'String');
@@ -285,39 +285,7 @@ function par=getParam(handles)
 
 
 
-% --- Executes on button press in runGratings.
-function runGratings_Callback(hObject, eventdata, handles)
-% hObject    handle to runGratings (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
-    % initialise the variables
-    par=getParam(handles);
-
-    par.nCols = 1
-    par.nRows = 1
-    par.chronicOrient=0;
-    showStimuli(par)
-
-
-
-% --- Executes on button press in runRetinotopy.
-function runRetinotopy_Callback(hObject, eventdata, handles)
-    % hObject    handle to runRetinotopy (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    par = getParam(handles);
-    par.chronicOrient=0;
-    ret4x3State = get(handles.retinotopy4x3, 'Value')
-    if ret4x3State == 1
-        par.nCols = 4
-        par.nRows = 3
-    else
-        par.nCols = 6
-        par.nRows = 4
-    end 
-
-    showStimuli(par)
 
 
 % --- Executes on button press in retinotopy4x3.
@@ -685,29 +653,6 @@ end
 
 
 
-% --- Executes on button press in runChronic.
-function runChronic_Callback(hObject, eventdata, handles)
-% hObject    handle to runChronic (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-par=getParam(handles);
-
-par.numOrient=1;
-par.timeDrift=par.chronicTime;  
-par.nCols=1;
-par.nRows=1;
-
-
-showStimuli(par);
-%showChronicStim(cyclesPerSecond, spatFreq, gabor, ...
-%    imageSize, stimStyle, timeIntro, timeStatic, timeDrift, biDirectional,...
-%    screenNumber, screenDist, gaussStDev, gaussTrim, screenWidth,...
-%    currentPath, orient)
-
-
-
 function chronicOrient_Callback(hObject, eventdata, handles)
 % hObject    handle to chronicOrient (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -728,3 +673,44 @@ function chronicOrient_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% ----------------------------------------------------------------------------
+% Callbacks for button presses
+
+function runGratings_Callback(hObject, eventdata, handles)
+    % initialise the variables
+    par=getParam(handles);
+
+    par.nCols = 1
+    par.nRows = 1
+    par.chronicOrient=0;
+    showStimuli(par)
+
+
+
+function runRetinotopy_Callback(hObject, eventdata, handles)
+    par = getParam(handles);
+    par.chronicOrient=0;
+    ret4x3State = get(handles.retinotopy4x3, 'Value')
+    if ret4x3State == 1
+        par.nCols = 4
+        par.nRows = 3
+    else
+        par.nCols = 6
+        par.nRows = 4
+    end 
+
+    showStimuli(par)
+
+
+function runChronic_Callback(hObject, eventdata, handles)
+    par=getParam(handles);
+
+    par.numOrient=1;
+    par.timeDrift=par.chronicTime;  
+    par.nCols=1;
+    par.nRows=1;
+
+
+    showStimuli(par);
