@@ -714,3 +714,21 @@ function runChronic_Callback(hObject, eventdata, handles)
 
 
     showStimuli(par);
+
+
+function runCustom_Callback(hObject, eventdata, handles)
+    par = getParam(handles);
+
+    try
+        customSequence = stimuli.parseCustomSequence(par.customSeq);
+
+        for stim = customSequence
+            display(stim.getValue());
+        end
+    catch e
+        title = 'An error occurred when parsing the custom sequence string';
+        uiwait(errordlg(e.message, title, 'modal'))
+    end
+   
+
+
