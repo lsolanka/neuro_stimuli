@@ -23,5 +23,9 @@ classdef UniformStimulus < stimuli.CustomStimulus
             
             obj.value = val;
         end
+
+        function startTime = draw()
+            startTime = nan;
+        end
     end
 end

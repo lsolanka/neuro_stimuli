@@ -18,5 +18,9 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
             end
             obj.value = val;
         end
+
+        function startTime = draw()
+            startTime = nan;
+        end
     end
 end

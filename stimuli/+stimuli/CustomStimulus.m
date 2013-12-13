@@ -11,7 +11,7 @@
 %
 % Custom stimulus base class
 %
-classdef (Abstract=true) CustomStimulus < matlab.mixin.Heterogeneous
+classdef (Abstract) CustomStimulus < matlab.mixin.Heterogeneous
 
     properties (Access = protected)
         value
@@ -21,6 +21,11 @@ classdef (Abstract=true) CustomStimulus < matlab.mixin.Heterogeneous
         function ret = getValue(obj)
             ret = obj.value;
         end
+    end
+
+
+    methods (Abstract)
+        startTime = draw()
     end
 
 end
