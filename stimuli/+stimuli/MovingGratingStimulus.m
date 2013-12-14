@@ -102,7 +102,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
 
 
 
-        function startTime = draw(obj, dstRect)
+        function timingData = draw(obj, dstRect)
             timeSeq = [];
 
 
@@ -111,12 +111,12 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
             angle    = obj.orientation;
             angleRad = angle*2*pi/360;      % angle in radians
 
-            vbl           = Screen('Flip', obj.w);
+            startTime = Screen('Flip', obj.w);
             % We run at most 'timeStatic + timeDrift' seconds if user doesn't
             % abort via keypress.
-            vblendtime    = vbl + obj.par.timeStatic + obj.par.timeDrift;
-            vblhalftime   = vbl + obj.par.timeStatic + obj.par.timeDrift/2;
-            vblStaticTime = vbl + obj.par.timeStatic;
+            totalEndTime  = startTime + obj.par.timeStatic + obj.par.timeDrift;
+            halfEndTime   = startTime + obj.par.timeStatic + obj.par.timeDrift/2;
+            staticEndTime = startTime + obj.par.timeStatic;
 
             timerDrift = 0;
 
@@ -124,9 +124,10 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
             count=0;
 
             j = 0;
-            while(vbl < vblendtime)
+            currTime = startTime;
+            while(currTime < totalEndTime)
                 % Shift the grating by "shiftperframe" pixels per frame:
-                if vbl >= vblStaticTime
+                if currTime >= staticEndTime
                     if timerDrift == 0
                         timeSeq(length(timeSeq)+1) = toc;
                         timerDrift = 1;
@@ -134,7 +135,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
                     end
                     if obj.par.biDirectional == 1                
 
-                        if vbl < vblhalftime
+                        if currTime < halfEndTime
                             if angle ~= 90 & angle ~= 270
                                 xOffset = mod(j*obj.shiftperframe/cos(angleRad),obj.p/abs(cos(angleRad)));
                                 yOffset = 0;
@@ -160,7 +161,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
                         end
                         j=j+1;
                     else
-                        if vbl < vblendtime
+                        if currTime < totalEndTime
                             if angle ~= 90 & angle ~= 270
                                 xOffset = mod(j*obj.shiftperframe/cos(angleRad),obj.p/abs(cos(angleRad)));
                                 yOffset = 0;
@@ -174,7 +175,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
                 end
 
 
-                if vbl < vblStaticTime
+                if currTime < staticEndTime
                     srcRect = [0 0 obj.visiblesize obj.visiblesize];
                 else               
                     srcRect = [xOffset yOffset xOffset + obj.visiblesize yOffset + obj.visiblesize];
@@ -187,7 +188,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
                     Screen('DrawTexture', obj.w, obj.maskTextureId, [0 0 obj.visiblesize obj.visiblesize], dstRect);
                 end;
 
-                vbl = Screen('Flip', obj.w, vbl + (obj.waitframes - 0.5) * obj.ifi);
+                currTime = Screen('Flip', obj.w, currTime + (obj.waitframes - 0.5) * obj.ifi);
 
                 % Abort demo if any key is pressed:
                 if KbCheck
