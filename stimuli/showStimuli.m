@@ -8,6 +8,7 @@
 %
 
 function showStimuli(par)
+    import stimuli.CustomStimulus;
     
     c=clock;
 
@@ -40,8 +41,6 @@ function showStimuli(par)
     try
         AssertOpenGL;
         
-
-        
         % ADD THE TRIGGER HERE - Paolo. (Comment this if it runs on our
         % laptops!
         
@@ -58,10 +57,8 @@ function showStimuli(par)
 %          end
 
         Screen('Preference', 'VisualDebugLevel', 1); % to avoid the white welcome screen
-        white = WhiteIndex(par.screenNumber);
-        black = BlackIndex(par.screenNumber);
-        gray  = round((white+black)/2);        % round it to avoid fraction errors
-        [w screenRect] = Screen('OpenWindow', par.screenNumber, gray, [0, 0, 200, 200]);
+        [white, black, grey] = CustomStimulus.getColors(par.screenNumber);
+        [w screenRect] = Screen('OpenWindow', par.screenNumber, grey); %, [0, 0, 400, 400]);
         par.w = w;
         
         % Create individual rectangles for the retinotopy
@@ -93,50 +90,30 @@ function showStimuli(par)
         eventSeqDummy = {};
         tic;
         
-        currentrect=0;
+        currentrect = 0;
         for numRect = [1:nRows*nCols]
-            currentrect=currentrect+1;
-            currentrow=mod(currentrect,nCols) +1;
-            currentcol=currentrect-(currentrow-1)*nRows;
+            currentrect = currentrect+1;
+            currentrow  = mod(currentrect,nCols) +1;
+            currentcol  = currentrect-(currentrow-1)*nRows;
             
-            stop = false;
-            %if stop
-            %    break;
-            %end
-
             dstRect = destRectList(numRect, :);
-
-            % record times and order of presentation of stimuli (for a .txt file)
-            %timeSeq = [];
-            %eventSeqDummy = {};
-            %tic;
 
             % Animationloop:
             for drawer = stimulusDrawers
-                if stop
-                    break;
-                end
-
-                drawer.draw(dstRect)
-
+                drawer.draw(dstRect);
             end
-            %timeSeq(length(timeSeq)+1) = toc;
 
         end
-
-        % Restore normal priority scheduling in case something else was set
-        % before:
-        Priority(0);
-        
-        %The same commands wich close onscreen and offscreen windows also close
-        %textures.
-        Screen('CloseAll');
 
     catch
         Screen('CloseAll');
         Priority(0);
         psychrethrow(psychlasterror);
     end
+
+    Priority(0);
+    Screen('CloseAll');
+
 
     %-------------------------- END OF SECTION -------------------------------
 

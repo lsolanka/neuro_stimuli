@@ -13,6 +13,11 @@
 %
 classdef UniformStimulus < stimuli.CustomStimulus
 
+    properties (Access = protected)
+        textureId
+        duration
+    end
+
     methods
         function obj = UniformStimulus(val)
             if (~isa(val, 'char') || numel(val) ~= 1)
@@ -24,8 +29,36 @@ classdef UniformStimulus < stimuli.CustomStimulus
             obj.value = val;
         end
 
-        function startTime = draw()
-            startTime = nan;
+
+        function setDrawingParameters(obj, par)
+            setDrawingParameters@stimuli.CustomStimulus(obj, par);
+            switch obj.value
+                case 'b'
+                    obj.duration = par.customBlackTime;
+                case 'g'
+                    obj.duration = par.customGreyTime;
+
+            end
+            obj.createTexture();
+        end
+
+
+        function createTexture(obj)
+            if (obj.value == 'b')
+                texture = obj.black;
+            else
+                texture = obj.grey;
+            end
+            obj.textureId = Screen('MakeTexture', obj.w, texture);
+        end
+
+
+        function retVal = draw(obj, dstRect)
+            srcRect = [0 0 obj.visiblesize obj.visiblesize];
+            Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
+            startTime   = Screen('Flip', obj.w, 0)
+            endTime     = startTime + obj.duration;
+            flipEndTime = Screen('Flip', obj.w, endTime)
         end
     end
 end
