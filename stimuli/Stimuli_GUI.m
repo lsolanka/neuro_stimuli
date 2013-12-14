@@ -87,8 +87,8 @@ set(handles.chronicTime,'String','60');
 
 % for the custom stim
 set(handles.customSeq,'String','');
-set(handles.customGreyTime,'String','0');
-set(handles.customBlackTime,'String','0');
+set(handles.customGreyTime,'String','2');
+set(handles.customBlackTime,'String','2');
 
 %---------------------END TOM-CODE------------------------------ 
 
@@ -225,64 +225,6 @@ function tempFreq_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- the function get all parameters set in the GUI
-function par=getParam(handles)
-    par.spatFreq = str2double(get(handles.spatFreq,'String'));
-    par.cyclesPerSecond = str2double(get(handles.tempFreq,'String'));
-    par.timeStatic = str2double(get(handles.staticTime,'String'));
-    par.timeDrift = str2double(get(handles.driftTime,'String'));
-    % 
-    % % the button ones too....
-    switch get(get(handles.numOrientationPanel,'SelectedObject'),'Tag')
-        case 'numOrient8',  par.numOrient = 8;
-        otherwise, par.numOrient = 16;
-    end
-
-    switch get(get(handles.gaborPanel,'SelectedObject'),'Tag')
-        case 'gaborOn',  par.gabor = 1;
-        otherwise, par.gabor = 0;
-    end
-
-    switch get(get(handles.stimStylePanel,'SelectedObject'),'Tag')
-        case 'stimBW',  par.stimStyle = 0;
-        otherwise, par.stimStyle = 1;
-    end
-
-    switch get(get(handles.movingModePanel,'SelectedObject'),'Tag')
-        case 'biDirectional',  par.biDirectional = 1;
-        otherwise, par.biDirectional = 0;
-    end
-
-    switch get(get(handles.orientSeqPanel,'SelectedObject'),'Tag')
-        case 'randomSeq',  par.randomOrder = 1;
-        otherwise, par.randomOrder = 0;
-    end
-
-
-    % and those from the parameters box.....
-    par.screenDist   = str2double(get(handles.distScreen,'String'));
-    par.screenWidth  = str2double(get(handles.widthScreen,'String'));
-    par.screenNumber = str2double(get(handles.numberScreen,'String'));
-    par.imageSize    = str2double(get(handles.sizeImage,'String'));
-    par.gaussStDev   = str2double(get(handles.stdevGauss,'String'));
-    par.gaussTrim    = str2double(get(handles.trimGauss,'String'));
-    par.timeIntro    = str2double(get(handles.introTime,'String'));
-
-    % those for the chronic stim
-    par.chronicOrient = str2double(get(handles.chronicOrient,'String'));
-    par.chronicTime   = str2double(get(handles.chronicTime,'String'));
-    
-    % those for Custom stim
-    par.customSeq       = get(handles.customSeq, 'String');
-    par.customGreyTime  = str2double(get(handles.customGreyTime, 'String'));
-    par.customBlackTime = str2double(get(handles.customBlackTime, 'String'));
-    
-    % and the save path
-    par.currentPath = get(handles.savePath,'String');
-    par.fileSuffix =get(handles.fileSuffix,'String');
-
 
 
 
@@ -702,6 +644,8 @@ function runRetinotopy_Callback(hObject, eventdata, handles)
         par.nCols = 6
         par.nRows = 4
     end 
+    par.stimulusDrawers = stimuli.calculateOrientations(...
+        par.numOrient, par.chronicOrient, par.randomOrder);
 
     showStimuli(par)
 
@@ -720,13 +664,12 @@ function runChronic_Callback(hObject, eventdata, handles)
 
 function runCustom_Callback(hObject, eventdata, handles)
     par = getParam(handles);
+    par.nCols = 1;
+    par.nRows = 1;    
 
     try
-        customSequence = stimuli.parseCustomSequence(par.customSeq);
-
-        for stim = customSequence
-            display(stim.getValue());
-        end
+        par.stimulusDrawers = stimuli.parseCustomSequence(par.customSeq);
+        showStimuli(par);
     catch e
         if strcmp(e.identifier, 'stimuli:parseCustomSequence:InvalidValue')
             title = 'An error occurred when parsing the custom sequence string';
