@@ -157,19 +157,6 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
         end
 
         function timingData = draw(obj, dstRect)
-            timeSeq = [];
-
-
-            timeSeq(length(timeSeq)+1) = toc;
-
-            angle    = obj.orientation;
-
-            timerDrift = 0;
-
-            % trick for keeping it smooth when rolling the other way
-            count=0;
-
-
             % ----------------------------------------------------------------
             % Static grating
             srcRect = [0 0 obj.visiblesize obj.visiblesize];
