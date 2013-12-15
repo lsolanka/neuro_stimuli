@@ -215,6 +215,13 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
                 return;
             end
 
+            
+            % ----------------------------------------------------------------
+            % Export timing data
+            staticStartTime = startTime;
+            timigData = stimuli.GratingTiming(obj.orientation, ...
+                    staticStartTime, forwardStartTime, obj.par.biDirectional, ...
+                    backwardStartTime)
 
         end % draw()
     end
