@@ -58,6 +58,8 @@ classdef UniformStimulus < stimuli.CustomStimulus
             Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
             startTime   = Screen('Flip', obj.w, 0)
             endTime     = startTime + obj.duration;
+            % Redraw to avoid any glitches
+            Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
             flipEndTime = Screen('Flip', obj.w, endTime)
 
             timing = stimuli.UniformTiming(startTime, flipEndTime);

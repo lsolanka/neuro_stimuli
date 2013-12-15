@@ -11,6 +11,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
 
     properties (Access = protected)
         orientation
+        orientationRad
         texSize
         textureId
         maskTextureId
@@ -30,6 +31,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
 
             obj.value = val;        
             obj.orientation = val; % Grating orientation
+            obj.orientationRad = obj.orientation * 2*pi / 360;
         end
 
 
@@ -100,7 +102,59 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
         end
 
 
+        
+        function drawGrating(obj, srcRect, dstRect)
+            Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
+            % Draw gaussian mask over grating if necessary
+            if obj.par.gabor == 1
+                Screen('DrawTexture', obj.w, obj.maskTextureId, srcRect, ...
+                        dstRect);
+            end
+        end
 
+
+        function [xOffset, yOffset] = calculateShiftOffset(obj, offIdx)
+            orientation = obj.orientation;
+            orientationRad = obj.orientationRad;
+            if orientation ~= 90 & orientation ~= 270
+                xOffset = mod(offIdx*obj.shiftperframe/cos(orientationRad), ...
+                        obj.p/abs(cos(orientationRad)));
+                yOffset = 0;
+            else
+                yOffset = mod(offIdx*obj.shiftperframe,obj.p);
+                xOffset = 0;
+            end
+
+        end
+
+
+        function [startTime, endTime, endOffset] = ...
+                moveGrating(obj, lastEndTime, startOffset, T, direction, srcRect, dstRect)
+            obj.drawGrating(srcRect, dstRect);
+            startTime = Screen('Flip', obj.w, lastEndTime + (obj.waitframes - 0.5) * obj.ifi);
+            endTime = startTime + T;
+
+            offIdx = startOffset;
+            currTime = startTime;
+            while(currTime < endTime)
+                [xOffset, yOffset] = obj.calculateShiftOffset(offIdx);
+                srcRect = [xOffset yOffset xOffset + obj.visiblesize ...
+                        yOffset + obj.visiblesize];
+                obj.drawGrating(srcRect, dstRect);
+                currTime = Screen('Flip', obj.w, currTime + (obj.waitframes - 0.5) * obj.ifi);
+
+
+                % Abort if any key is pressed:
+                if KbCheck
+                    break;
+                end
+
+                offIdx = offIdx + direction;
+            end
+
+            endTime = currTime;
+            endOffset = offIdx;
+        end
 
         function timingData = draw(obj, dstRect)
             timeSeq = [];
@@ -109,92 +163,56 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
             timeSeq(length(timeSeq)+1) = toc;
 
             angle    = obj.orientation;
-            angleRad = angle*2*pi/360;      % angle in radians
-
-            startTime = Screen('Flip', obj.w);
-            % We run at most 'timeStatic + timeDrift' seconds if user doesn't
-            % abort via keypress.
-            totalEndTime  = startTime + obj.par.timeStatic + obj.par.timeDrift;
-            halfEndTime   = startTime + obj.par.timeStatic + obj.par.timeDrift/2;
-            staticEndTime = startTime + obj.par.timeStatic;
 
             timerDrift = 0;
 
             % trick for keeping it smooth when rolling the other way
             count=0;
 
-            j = 0;
-            currTime = startTime;
-            while(currTime < totalEndTime)
-                % Shift the grating by "shiftperframe" pixels per frame:
-                if currTime >= staticEndTime
-                    if timerDrift == 0
-                        timeSeq(length(timeSeq)+1) = toc;
-                        timerDrift = 1;
-                        j=0;
-                    end
-                    if obj.par.biDirectional == 1                
 
-                        if currTime < halfEndTime
-                            if angle ~= 90 & angle ~= 270
-                                xOffset = mod(j*obj.shiftperframe/cos(angleRad),obj.p/abs(cos(angleRad)));
-                                yOffset = 0;
-                            else
-                                yOffset = mod(j*obj.shiftperframe,obj.p);
-                                xOffset = 0;
-                            end
-                        else
-                            if count == 0                            
-                                k = j;
-                                j=0;
-                                count = 1;
-                                timeSeq(length(timeSeq)+1) = toc; %record time                             
-                            end
-                            if angle ~= 90 & angle ~= 270                    
-                                xOffset = mod((k-j)*obj.shiftperframe/cos(angleRad),abs(obj.p/cos(angleRad)));
-                                yOffset = 0;
-                            else
-                                yOffset = mod((k-j)*obj.shiftperframe,obj.p);
-                                xOffset = 0;
-                            end
+            % ----------------------------------------------------------------
+            % Static grating
+            srcRect = [0 0 obj.visiblesize obj.visiblesize];
 
-                        end
-                        j=j+1;
-                    else
-                        if currTime < totalEndTime
-                            if angle ~= 90 & angle ~= 270
-                                xOffset = mod(j*obj.shiftperframe/cos(angleRad),obj.p/abs(cos(angleRad)));
-                                yOffset = 0;
-                            else
-                                yOffset = mod(j*obj.shiftperframe,obj.p);
-                                xOffset = 0;
-                            end
-                        end
-                        j = j+1;
-                    end
-                end
+            obj.drawGrating(srcRect, dstRect);
+            startTime = Screen('Flip', obj.w);
+            obj.drawGrating(srcRect, dstRect);
+            staticEndTime = Screen('Flip', obj.w, startTime + obj.par.timeStatic);
+
+            if KbCheck
+                return;
+            end
+
+            % ----------------------------------------------------------------
+            % Forward moving grating; duration depends on the biDirectional parameter
+            if obj.par.biDirectional
+                forwardTime = obj.par.timeDrift / 2;
+            else
+                forwardTime = obj.par.timeDrift;
+            end
+            direction = 1;
+            [forwardStartTime, forwardEndTime, offIdx] = ...
+                    obj.moveGrating(staticEndTime, 0, forwardTime, ...
+                    direction, srcRect, dstRect);
+
+            if KbCheck
+                return;
+            end
+
+            % ----------------------------------------------------------------
+            % Backward moving grating: if biDirectional
+            if obj.par.biDirectional == 1                
+                direction = -1;
+                backwardTime = obj.par.timeDrift / 2;
+                bacwardStartTime = obj.moveGrating(forwardEndTime, offIdx, ...
+                        backwardTime, direction, srcRect, dstRect);
+            else
+                backwardStartTime = nan;
+            end
 
 
-                if currTime < staticEndTime
-                    srcRect = [0 0 obj.visiblesize obj.visiblesize];
-                else               
-                    srcRect = [xOffset yOffset xOffset + obj.visiblesize yOffset + obj.visiblesize];
-                end
-
-                Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
-
-                if obj.par.gabor==1
-                    % Draw gaussian mask over grating:
-                    Screen('DrawTexture', obj.w, obj.maskTextureId, [0 0 obj.visiblesize obj.visiblesize], dstRect);
-                end;
-
-                currTime = Screen('Flip', obj.w, currTime + (obj.waitframes - 0.5) * obj.ifi);
-
-                % Abort demo if any key is pressed:
-                if KbCheck
-                    stop = true;
-                    break;
-                end
+            if KbCheck
+                return;
             end
 
 
