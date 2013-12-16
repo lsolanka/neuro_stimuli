@@ -1,4 +1,7 @@
 %
+% Set up screens for drawing stimuli, draw them, and save the parameter setup
+% and stimuli timing details into the output file.
+%
 % Created for Nathalie Rochefort's lab by Tom Mayo, Summer 2013,
 % NeuroInformatics DTC @ Edinburgh
 %
@@ -6,32 +9,12 @@
 %   Lukas Solanka <lukas.solanka@ed.ac.uk>
 %   Paolo Puggioni <p.puggioni@sms.ed.ac.uk>
 %
-
 function showStimuli(par)
     import stimuli.CustomStimulus;
     
     c=clock;
-
     stimulusDrawers = par.stimulusDrawers
-
-    %chronicOrient   = par.chronicOrient
-    %cyclesPerSecond = par.cyclesPerSecond
-    %spatFreq        = par.spatFreq     
-    %gabor           = par.gabor        
-    %imageSize       = par.imageSize    
-    %stimStyle       = par.stimStyle    
-    %timeIntro       = par.timeIntro    
-    %timeStatic      = par.timeStatic   
-    %timeDrift       = par.timeDrift    
-    %biDirectional   = par.biDirectional
-    %randomOrder     = par.randomOrder  
-    %screenNumber    = par.screenNumber 
-    %screenDist      = par.screenDist   
-    %gaussStDev      = par.gaussStDev   
-    %gaussTrim       = par.gaussTrim    
     screenWidth     = par.screenWidth  
-    %currentPath     = par.currentPath
-    %fileSuffix      = par.fileSuffix
     nCols           = par.nCols
     nRows           = par.nRows
 

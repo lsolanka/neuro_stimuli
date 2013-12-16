@@ -1,10 +1,8 @@
 %
-%   getParam.m
-%
-%   Parse GUI parameters
+%   Parse GUI parameters.
 %
 %   Copyright (C) 2013, NeuroAgile.
-%       Authors: Lukas Solanka, <lsolanka@gmail.com>
+%       Authors: Paolo Puggioni <p.paolo321@gmail.com>
 %
 
 % Get all parameters set in the GUI
