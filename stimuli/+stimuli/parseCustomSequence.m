@@ -1,18 +1,18 @@
 %
-%   parseCustomSequence.m
-%
 %   Create a list of CustomSequence objects from a string input.
+%       The sequence string is a comma separated list of these values:
+%           * 'b' - Blank black screen as a stimulus
+%           * 'g' - Blank grey screen as a stimulus
+%           * Number - Grating stimulus, with grating angle specified by the
+%               number
+%
+%   Parameters:
+%       seqStr A string containing the sequence of colors and angles
+%   Returns:
+%       An array of customSequence objects
 %
 %   Copyright (C) 2013, NeuroAgile.
 %       Authors: Lukas Solanka, <lsolanka@gmail.com>
-%
-
-
-% 
-% Parse the sequence string and return a cell array of colors or angles.
-%
-% @param seqStr A string containing the sequence of colors and angles
-% @return An array of customSequence objects
 %
 function returnSequence = parseCustomSequence(seqStr)
 

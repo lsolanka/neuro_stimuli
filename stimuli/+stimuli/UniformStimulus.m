@@ -1,25 +1,27 @@
 %
-%   UniformStimulus.m
+%   A uniform stimulus definition.
+%       Draws a blank screen with a specified color (black or grey), for a
+%       specified time duration.
+%       
+%       This class uses PsychoToolbox for drawing.
 %
-%   A uniform stimulus class identifier.
+%       See also UniformTiming
 %
-%   Copyright (C) 2013, NeuroAgile.
+%   Copyright (C) 2013
 %       Authors: Lukas Solanka, <lsolanka@gmail.com>
-%
-
-%
-% Uniform stimulus identifier.
-% Accepts a single color specifier (one character)
 %
 classdef UniformStimulus < stimuli.CustomStimulus
 
     properties (Access = protected)
-        textureId
-        duration
+        textureId   % Uniform texture identifier
+        duration    % Duration of the stimulus (seconds)
     end
 
     methods
         function obj = UniformStimulus(val)
+            % Fill in CustomStimulus.value. Don't check whether the value is
+            % valid (i.e. 'b' or 'g') This has to be done by the user.
+
             if (~isa(val, 'char') || numel(val) ~= 1)
                 msg = 'A color definition for a uniform stimulus must be a char';
                 id = 'stimuli:UniformStimulus:InvalidValue';
@@ -31,6 +33,9 @@ classdef UniformStimulus < stimuli.CustomStimulus
 
 
         function setDrawingParameters(obj, par)
+            % Parse the parameter structure (par) and extract the duration of
+            % the stimulus.
+
             setDrawingParameters@stimuli.CustomStimulus(obj, par);
             switch obj.value
                 case 'b'
@@ -44,6 +49,10 @@ classdef UniformStimulus < stimuli.CustomStimulus
 
 
         function createTexture(obj)
+            % Create the texture object and store the ID of the texture. In
+            % this case, the texture is just 1 pixel, since everything will be
+            % repeated accordingly when calling DrawTexture.
+
             if (obj.value == 'b')
                 texture = obj.black;
             else
@@ -54,6 +63,12 @@ classdef UniformStimulus < stimuli.CustomStimulus
 
 
         function timing = draw(obj, dstRect)
+            % Draw the texture. use two flips: one to display the texture
+            % initially, the other one to keep the texture on for a specified
+            % amount of time.
+            %
+            % Return the timing information: UniformTiming
+
             srcRect = [0 0 obj.visiblesize obj.visiblesize];
             Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
             startTime   = Screen('Flip', obj.w, 0)

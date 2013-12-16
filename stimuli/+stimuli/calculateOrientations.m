@@ -1,11 +1,10 @@
 %
-%   calculateOrientations.m
-%
 %   Create a list of stimuli drawers, based on number of orientations per
 %   circle.
 %
 %   Copyright (C) 2013, NeuroAgile.
-%       Authors: Lukas Solanka, <lsolanka@gmail.com>
+%       Authors: Paolo Puggioni, <p.paolo321@gmail.com>
+%                Lukas Solanka, <lsolanka@gmail.com>
 %
 function stimulusDrawers = calculateOrientations(numOrient, chronicOrient,...
     randomOrder)
