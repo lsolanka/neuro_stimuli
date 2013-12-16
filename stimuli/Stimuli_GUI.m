@@ -658,7 +658,9 @@ function runChronic_Callback(hObject, eventdata, handles)
     par.nCols=1;
     par.nRows=1;
 
-
+    par.stimulusDrawers = stimuli.calculateOrientations(...
+        par.numOrient, par.chronicOrient, par.randomOrder);
+    
     showStimuli(par);
 
 
@@ -669,6 +671,7 @@ function runCustom_Callback(hObject, eventdata, handles)
 
     try
         par.stimulusDrawers = stimuli.parseCustomSequence(par.customSeq);
+        par.Custom_seq=1;
         showStimuli(par);
     catch e
         if strcmp(e.identifier, 'stimuli:parseCustomSequence:InvalidValue')

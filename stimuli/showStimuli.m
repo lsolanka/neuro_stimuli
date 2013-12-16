@@ -40,6 +40,10 @@ function showStimuli(par)
 
     try
         AssertOpenGL;
+        dummy=GetSecs;
+        Screen('Preference', 'VisualDebugLevel', 1); % to avoid the white welcome screen
+        [white, black, grey] = CustomStimulus.getColors(par.screenNumber);
+        [w screenRect] = Screen('OpenWindow', par.screenNumber, grey); %, [0, 0, 400, 400]);
         
         % ADD THE TRIGGER HERE - Paolo. (Comment this if it runs on our
         % laptops!
@@ -50,15 +54,14 @@ function showStimuli(par)
 %          a=0;
 %          
 %          while a<1 
-%            pause(0.0005);
+%            %pause(0.0005);
 %            testt=s.inputSingleScan;
 %            a=testt(end);
 %            
 %          end
 
-        Screen('Preference', 'VisualDebugLevel', 1); % to avoid the white welcome screen
-        [white, black, grey] = CustomStimulus.getColors(par.screenNumber);
-        [w screenRect] = Screen('OpenWindow', par.screenNumber, grey); %, [0, 0, 400, 400]);
+        par.Trigger_time=GetSecs;
+    
         par.w = w;
         
         % Create individual rectangles for the retinotopy
@@ -86,8 +89,10 @@ function showStimuli(par)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
         %                         Actual drawing
 
-        timeSeq = [];
+        Seq_time = {};
         eventSeqDummy = {};
+        ii=0;
+        
         tic;
         
         currentrect = 0;
@@ -100,11 +105,12 @@ function showStimuli(par)
 
             % Animationloop:
             for drawer = stimulusDrawers
-                drawer.draw(dstRect);
+                ii=ii+1;
+                Seq_time{ii}=drawer.draw(dstRect);
             end
 
         end
-
+        par.End_time=GetSecs;
     catch
         Screen('CloseAll');
         Priority(0);
@@ -120,80 +126,65 @@ function showStimuli(par)
 
 
     % --------------------SAVE THE ORDER AND TIME OF EVENTS------------------
-
-
-    %% add the order of orientations, with & without drifts to the eventSeq list
-
-    % if biDirectional == 0    
-    %     orientEventList = cell(1,2*numOrient+1);
-    %     for i =[1:numOrient]
-    %         orientEventList{2*i-1} = strcat(num2str(orientList_print(i)),' -Static');
-    %         orientEventList{2*i} = strcat(num2str(orientList_print(i)),' -Drift');
-    %     end
-    %     orientEventList{2*numOrient+1} = sprintf('End');
-    % else
-    %     orientEventList = cell(1,3*numOrient+1);
-    %     for i =[1:numOrient]
-    %         orientEventList{3*i-2} = strcat(num2str(orientList_print(i)),'\tStatic');
-    %         orientEventList{3*i-1} = strcat(num2str(orientList_print(i)),'\tDrift');
-    %         orientEventList{3*i} = strcat(num2str(orientList_print(i)),'\tReverse');
-    %     end
-    %     
-    %     orientEventList{3*numOrient+1} = sprintf('End');
-    % end
-    % 
-    % % combine order or orientations with other events
-    % 
-    % orientEventList=repmat(orientEventList,[1,numRect]);
-    % 
-    % total = length(eventSeqDummy)+length(orientEventList);
-    % eventSeq = cell(1,total);
-    % for i = [1:total]
-    %     if i <= length(eventSeqDummy)
-    %         eventSeq{i} = eventSeqDummy{i};
-    %     else
-    %         eventSeq{i} = orientEventList{i-length(eventSeqDummy)};
-    %     end
-    % end
-    % 
-    % % write eventSeq and timeSeq to a .txt file
-    % % this has the form 'eventSeq', new line, a line with all the events in
-    % % order, then new line, 'timeSeq', and a line with all times in order
-    % 
-    % formatOut='yymmdd_HHMMSS';
-    % 
-    % name1=datestr(c,formatOut);
-    % namefolder=datestr(c,'yymmdd/');
-    % 
-    % mkdir(currentPath,namefolder);
-    % 
-    % currentPath=cat(2,currentPath,namefolder);
-    % 
-    % file_name = cat(2,currentPath,name1,fileSuffix,'.txt');
-    % fid = fopen (file_name,'w');
-    % 
-    % fprintf(fid,'PARAMETERS:\n');
-    % if numOrient==1
-    %    fprintf(fid,'Chronic stimulus\n');   
-    %    fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',timeDrift,timeStatic,spatFreq,cyclesPerSecond);
-    %    fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',chronicOrient);
-    % else
-    % if nRows>1
-    %    fprintf(fid,'Retinotopy, row x col: %d x %d\n',nRows,nCols);       
-    % end
-    % fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',timeDrift,timeStatic,spatFreq,cyclesPerSecond);
-    % fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', numOrient, randomOrder,biDirectional,stimStyle,gabor);
-    % end
-    % 
-    % fprintf(fid,'\nTime(s)\tOrient.(deg)-Type\n');
-    % 
-    % kk=0;
-    % while kk<length(timeSeq)
-    %    kk=kk+1;
-    %    fprintf(fid,'%3.4f\t%s\n',timeSeq(kk),eventSeq{kk});
-    % end
-    % 
-
-    % fclose(fid);
+  
+    
+    formatOut='yymmdd_HHMMSS';
+    
+    name1=datestr(c,formatOut);
+    namefolder=datestr(c,'yymmdd/');
+    
+    mkdir(par.currentPath,namefolder);
+    
+    currentPath=cat(2,par.currentPath,namefolder);
+    
+    file_name = cat(2,currentPath,name1,par.fileSuffix,'.txt');
+    fid = fopen (file_name,'w');
+ 
+    
+    fprintf(fid,'PARAMETERS:\n');
+    if par.numOrient==1
+       fprintf(fid,'Chronic stimulus\n');   
+       fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
+       fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',par.chronicOrient);
+    else
+        if nRows>1
+            fprintf(fid,'Retinotopy, row x col: %d x %d\n',nRows,nCols);
+        elseif isfield(par,'Custom_seq')
+            if par.Custom_seq==1
+               fprintf(fid,'Custom Sequence: %s \n',par.customSeq); 
+            end
+        else
+           fprintf(fid,'Moving gratings \n'); 
+        end
+        fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
+        fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
+    end
+    
+    fprintf(fid,'\nTime(s)\tOrient.(deg)-Type\n');
+    
+     kk=0;
+     while kk<length(Seq_time)
+        kk=kk+1;
+        
+        if isprop(Seq_time{kk},'startTime')
+          time_static=Seq_time{kk}.startTime - par.Trigger_time; 
+          fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,0,'Uniform');  
+            
+        else
+        time_static=Seq_time{kk}.staticStartT - par.Trigger_time;
+        fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Static');
+        time_forward=Seq_time{kk}.forwardStartT - par.Trigger_time;
+        fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_forward,Seq_time{kk}.angle-90,'Forward');
+        
+        if Seq_time{kk}.bidirectional==1
+           time_backward=Seq_time{kk}.backwardStartT - par.Trigger_time;
+           fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_backward,Seq_time{kk}.angle-90,'Backward');
+        end
+        end
+     end
+     
+     fprintf(fid,'%3.4f\tEnd\n',par.End_time-par.Trigger_time);
+     
+    fclose(fid);
      
 

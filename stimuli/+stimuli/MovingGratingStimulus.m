@@ -78,7 +78,8 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
                 grating = obj.white*round(0.5 + 0.5*cos(fr*canvas));
             else
                 % sinusoidal
-                grating = grey + inc*cos(fr*canvas);
+                %inc=100;
+                grating = obj.grey + inc*cos(fr*canvas); %inc does not exist. I tried obj.inc and still does not exist. If you put inc=100, seems reasonable.
             end
 
             obj.textureId = Screen('MakeTexture', obj.w, grating);
@@ -120,9 +121,13 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
                 xOffset = mod(offIdx*obj.shiftperframe/cos(orientationRad), ...
                         obj.p/abs(cos(orientationRad)));
                 yOffset = 0;
-            else
+            elseif orientation == 90
                 yOffset = mod(offIdx*obj.shiftperframe,obj.p);
                 xOffset = 0;
+            elseif orientation == 270
+                yOffset = mod(-offIdx*obj.shiftperframe,obj.p);
+                xOffset = 0;
+                
             end
 
         end
@@ -191,7 +196,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
             if obj.par.biDirectional == 1                
                 direction = -1;
                 backwardTime = obj.par.timeDrift / 2;
-                bacwardStartTime = obj.moveGrating(forwardEndTime, offIdx, ...
+                backwardStartTime = obj.moveGrating(forwardEndTime, offIdx, ...
                         backwardTime, direction, srcRect, dstRect);
             else
                 backwardStartTime = nan;
@@ -206,7 +211,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
             % ----------------------------------------------------------------
             % Export timing data
             staticStartTime = startTime;
-            timigData = stimuli.GratingTiming(obj.orientation, ...
+            timingData = stimuli.GratingTiming(obj.orientation, ...
                     staticStartTime, forwardStartTime, obj.par.biDirectional, ...
                     backwardStartTime)
 
