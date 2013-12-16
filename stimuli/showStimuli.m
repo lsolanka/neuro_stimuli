@@ -19,15 +19,46 @@ function showStimuli(par)
     nRows           = par.nRows
 
     
-    %orientList_print=orientList-90; %to print correct values in the file
-
     try
+        % --------------------------------------------------------------------
+        %         This code has to be before the trigger waiting loop
+        % --------------------------------------------------------------------
         AssertOpenGL;
         dummy=GetSecs;
         Screen('Preference', 'VisualDebugLevel', 1); % to avoid the white welcome screen
         [white, black, grey] = CustomStimulus.getColors(par.screenNumber);
         [w screenRect] = Screen('OpenWindow', par.screenNumber, grey); %, [0, 0, 400, 400]);
+
+        % Initialise the drawers. This should be before the actual drawing
+        % begins.
+        par.w = w;
+        for drawer = stimulusDrawers
+            drawer.setDrawingParameters(par);
+        end
+
+        % Create individual rectangles, depending on the nRows and nCols
+        % parameters
+        screenWidth  = screenRect(3) - screenRect(1)
+        screenHeight = screenRect(4) - screenRect(2)
+        width        = floor(screenWidth / nCols);
+        height       = floor(screenHeight / nRows);
+
+        destRectList = zeros(nRows * nCols, 4);
+        it = 1;
+        for row = [1:nRows]
+            for col = [1:nCols]
+                destRectList(it, 1) = (col-1) * width;
+                destRectList(it, 2) = (row-1) * height;
+                destRectList(it, 3) = (col) * width;
+                destRectList(it, 4) = (row) * height;
+                it = it + 1;
+            end
+        end
+
+        % --------------------------------------------------------------------
         
+
+
         % ADD THE TRIGGER HERE - Paolo. (Comment this if it runs on our
         % laptops!
         
@@ -45,33 +76,11 @@ function showStimuli(par)
 
         par.Trigger_time=GetSecs;
     
-        par.w = w;
         
-        % Create individual rectangles for the retinotopy
-        screenWidth  = screenRect(3) - screenRect(1)
-        screenHeight = screenRect(4) - screenRect(2)
-        width        = floor(screenWidth / nCols);
-        height       = floor(screenHeight / nRows);
 
-        destRectList = zeros(nRows * nCols, 4);
-        it = 1;
-        for row = [1:nRows]
-            for col = [1:nCols]
-                destRectList(it, 1) = (col-1) * width;
-                destRectList(it, 2) = (row-1) * height;
-                destRectList(it, 3) = (col) * width;
-                destRectList(it, 4) = (row) * height;
-                it = it + 1;
-            end
-        end
-        
-        for drawer = stimulusDrawers
-            drawer.setDrawingParameters(par);
-        end
-        
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-        %                         Actual drawing
 
+        % --------------------------------------------------------------------
+        %                               DRAW
         Seq_time = {};
         eventSeqDummy = {};
         ii=0;
@@ -91,8 +100,9 @@ function showStimuli(par)
                 ii=ii+1;
                 Seq_time{ii}=drawer.draw(dstRect);
             end
-
         end
+        % --------------------------------------------------------------------
+
         par.End_time=GetSecs;
     catch
         Screen('CloseAll');
@@ -104,7 +114,6 @@ function showStimuli(par)
     Screen('CloseAll');
 
 
-    %-------------------------- END OF SECTION -------------------------------
 
 
 
