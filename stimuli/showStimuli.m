@@ -56,7 +56,6 @@ function showStimuli(par)
         end
 
         % --------------------------------------------------------------------
-        
 
 
         % ADD THE TRIGGER HERE - Paolo. (Comment this if it runs on our
@@ -76,23 +75,13 @@ function showStimuli(par)
 
         par.Trigger_time=GetSecs;
     
-        
-
 
         % --------------------------------------------------------------------
         %                               DRAW
         Seq_time = {};
-        eventSeqDummy = {};
         ii=0;
         
-        tic;
-        
-        currentrect = 0;
         for numRect = [1:nRows*nCols]
-            currentrect = currentrect+1;
-            currentrow  = mod(currentrect,nCols) +1;
-            currentcol  = currentrect-(currentrow-1)*nRows;
-            
             dstRect = destRectList(numRect, :);
 
             % Animationloop:
