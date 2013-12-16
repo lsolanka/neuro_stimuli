@@ -18,7 +18,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
         cyclesPerPixel
         p
         shiftperframe
-
+        cosBaseLine  % Baseline color for cosine gratings
     end
 
     methods
@@ -58,6 +58,8 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
             obj.p = 1 / obj.cyclesPerPixel;  % pixels/cycle    
             obj.shiftperframe = par.cyclesPerSecond * obj.p * obj.waitduration;
 
+            obj.cosBaseLine = obj.white - obj.grey;
+
             obj.createGratingTexture();
             obj.createGaussianMask();
         end
@@ -78,8 +80,7 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
                 grating = obj.white*round(0.5 + 0.5*cos(fr*canvas));
             else
                 % sinusoidal
-                %inc=100;
-                grating = obj.grey + inc*cos(fr*canvas); %inc does not exist. I tried obj.inc and still does not exist. If you put inc=100, seems reasonable.
+                grating = obj.grey + obj.cosBaseLine * cos(fr*canvas);
             end
 
             obj.textureId = Screen('MakeTexture', obj.w, grating);
