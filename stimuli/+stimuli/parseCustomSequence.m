@@ -44,7 +44,7 @@ function returnSequence = parseCustomSequence(seqStr)
             end
         else
             % Grating stimulus specified by an angle
-            returnSequence = [returnSequence stimuli.MovingGratingStimulus(angle)];
+            returnSequence = [returnSequence stimuli.MovingGratingStimulus(angle+90)];
         end
     end
     

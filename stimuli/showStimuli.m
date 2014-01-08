@@ -119,6 +119,7 @@ function showStimuli(par)
     currentPath=cat(2,par.currentPath,namefolder);
     
     file_name = cat(2,currentPath,name1,par.fileSuffix,'.txt');
+    file_name_mat=cat(2,currentPath,name1,par.fileSuffix,'.mat');
     fid = fopen (file_name,'w');
  
     
@@ -142,7 +143,10 @@ function showStimuli(par)
     end
     
     fprintf(fid,'\nTime(s)\tOrient.(deg)-Type\n');
-    
+     time_vec=[];
+     angle_vec=[];
+     type_vec={};
+     ll=0;
      kk=0;
      while kk<length(Seq_time)
         kk=kk+1;
@@ -150,21 +154,40 @@ function showStimuli(par)
         if isprop(Seq_time{kk},'startTime')
           time_static=Seq_time{kk}.startTime - par.Trigger_time; 
           fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,0,'Uniform');  
-            
+          time_vec=[time_vec; time_static];
+          type_vec=[type_vec; 'U'];
+          angle_vec=[angle_vec;0];
         else
         time_static=Seq_time{kk}.staticStartT - par.Trigger_time;
         fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Static');
+        time_vec=[time_vec; time_static];
+        type_vec=[type_vec; 'S'];
+        angle_vec=[angle_vec;Seq_time{kk}.angle-90];
+        
         time_forward=Seq_time{kk}.forwardStartT - par.Trigger_time;
         fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_forward,Seq_time{kk}.angle-90,'Forward');
+        time_vec=[time_vec; time_forward];
+        type_vec=[type_vec; 'F'];
+        angle_vec=[angle_vec;Seq_time{kk}.angle-90];
+        
         
         if Seq_time{kk}.bidirectional==1
            time_backward=Seq_time{kk}.backwardStartT - par.Trigger_time;
            fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_backward,Seq_time{kk}.angle-90,'Backward');
+           time_vec=[time_vec; time_backward];
+           type_vec=[type_vec; 'B'];
+           angle_vec=[angle_vec;Seq_time{kk}.angle-90];
         end
         end
      end
      
      fprintf(fid,'%3.4f\tEnd\n',par.End_time-par.Trigger_time);
+     
+     data_all.time=time_vec;
+     data_all.type=type_vec;
+     data_all.angle=angle_vec;
+     
+     save(file_name_mat,'par','data_all')
      
     fclose(fid);
      
