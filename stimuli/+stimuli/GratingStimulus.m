@@ -14,7 +14,6 @@ classdef GratingStimulus < stimuli.CustomStimulus
     properties (Access = protected)
         orientation     % Orientation of the grating (degrees)
         orientationRad  % Orientation of the gratin in radians
-        textureId       % OpenGL grating texture ID
         maskTextureId   % OpenGL gabor mask texture ID
         cyclesPerPixel  % Grating cycles per texture pixels
         p               % Pixels per cycle (1/cyclesPerPixel)
@@ -57,20 +56,18 @@ classdef GratingStimulus < stimuli.CustomStimulus
 
             obj.cosBaseLine = obj.white - obj.grey;
 
-            obj.createGratingTexture();
             obj.createGaussianMask();
         end
 
 
 
-        function createGratingTexture(obj)
+        function textureId = createGratingTexture(obj)
             % Create the actual grating texture.
             % First, a canvas is created which defines the X and Y coordinates.
             % Then, based on par.stimStyle draw a black and white grating
             % (stimTyle == 0) or a sinusoidal grating (stimStyle == 1).
             % 
-            % After calling this method, obj.textureId can be used to draw the
-            % texture on the screen.
+            % This method returns the texture ID
 
             [x, y] = stimuli.CustomStimulus.createCanvas(obj.texsize, obj.cyclesPerPixel);
             fr = obj.cyclesPerPixel*2*pi; % frequency (per pixel) in radians
@@ -86,7 +83,7 @@ classdef GratingStimulus < stimuli.CustomStimulus
                 grating = obj.grey + obj.cosBaseLine * cos(fr*canvas);
             end
 
-            obj.textureId = Screen('MakeTexture', obj.w, grating);
+            textureId = Screen('MakeTexture', obj.w, grating);
         end
 
 
@@ -109,12 +106,12 @@ classdef GratingStimulus < stimuli.CustomStimulus
 
 
         
-        function drawGrating(obj, srcRect, dstRect)
+        function drawGrating(obj, srcRect, dstRect, textureId)
             % Draw the grating into the object's window.
             % If par.gabor == 1, also draw the Gaussian mask created in
             % createGaussianMask
 
-            Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
+            Screen('DrawTexture', obj.w, textureId, srcRect, dstRect);
             if obj.par.gabor == 1
                 Screen('DrawTexture', obj.w, obj.maskTextureId, srcRect, ...
                         dstRect);

@@ -18,6 +18,7 @@
 classdef MovingGratingStimulus < stimuli.GratingStimulus
 
     properties (Access = protected)
+        textureId       % OpenGL grating texture ID
         shiftperframe   % Number of pixels to shift the grating per cycle
     end
 
@@ -35,6 +36,8 @@ classdef MovingGratingStimulus < stimuli.GratingStimulus
             obj.value = val;        
             obj.orientation = val; % Grating orientation
             obj.orientationRad = obj.orientation * 2*pi / 360;
+
+            obj.textureId = nan;
         end
 
 
@@ -51,6 +54,8 @@ classdef MovingGratingStimulus < stimuli.GratingStimulus
             setDrawingParameters@stimuli.GratingStimulus(obj, par);
 
             obj.shiftperframe = par.cyclesPerSecond * obj.p * obj.waitduration;
+
+            obj.textureId = obj.createGratingTexture();
         end
 
 
@@ -101,7 +106,7 @@ classdef MovingGratingStimulus < stimuli.GratingStimulus
                 %   endOffset - Offset index of the grating at the last frame.
                 %       use this when drawing the backward movement.
                 %   
-            obj.drawGrating(srcRect, dstRect);
+            obj.drawGrating(srcRect, dstRect, obj.textureId);
             startTime = Screen('Flip', obj.w, lastEndTime + (obj.waitframes - 0.5) * obj.ifi);
             endTime = startTime + T;
 
@@ -111,7 +116,7 @@ classdef MovingGratingStimulus < stimuli.GratingStimulus
                 [xOffset, yOffset] = obj.calculateShiftOffset(offIdx);
                 srcRect = [xOffset yOffset xOffset + obj.visiblesize ...
                         yOffset + obj.visiblesize];
-                obj.drawGrating(srcRect, dstRect);
+                obj.drawGrating(srcRect, dstRect, obj.textureId);
                 currTime = Screen('Flip', obj.w, currTime + (obj.waitframes - 0.5) * obj.ifi);
 
 
@@ -143,9 +148,9 @@ classdef MovingGratingStimulus < stimuli.GratingStimulus
             % Static grating
             srcRect = [0 0 obj.visiblesize obj.visiblesize];
 
-            obj.drawGrating(srcRect, dstRect);
+            obj.drawGrating(srcRect, dstRect, obj.textureId);
             startTime = Screen('Flip', obj.w);
-            obj.drawGrating(srcRect, dstRect);
+            obj.drawGrating(srcRect, dstRect, obj.textureId);
             staticEndTime = Screen('Flip', obj.w, startTime + obj.par.timeStatic);
 
             if KbCheck
