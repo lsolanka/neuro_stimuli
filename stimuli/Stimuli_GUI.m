@@ -628,7 +628,8 @@ function runGratings_Callback(hObject, eventdata, handles)
     par.nRows = 1;
     par.chronicOrient = 0;
     par.stimulusDrawers = stimuli.calculateOrientations(...
-        par.numOrient, par.chronicOrient, par.randomOrder);
+        par.numOrient, par.chronicOrient, par.randomOrder, ...
+        stimuli.StimulusType.MovingGrating);
     showStimuli(par);
 
 
@@ -645,7 +646,8 @@ function runRetinotopy_Callback(hObject, eventdata, handles)
         par.nRows = 4
     end 
     par.stimulusDrawers = stimuli.calculateOrientations(...
-        par.numOrient, par.chronicOrient, par.randomOrder);
+        par.numOrient, par.chronicOrient, par.randomOrder, ...
+        stimuli.StimulusType.MovingGrating);
 
     showStimuli(par)
 
@@ -658,8 +660,14 @@ function runChronic_Callback(hObject, eventdata, handles)
     par.nCols=1;
     par.nRows=1;
 
+    if (par.chronicReversal)
+        stimulusType = stimuli.StimulusType.PhaseReversal;
+    else
+        stimulusType = stimuli.StimulusType.MovingGrating;
+    end
+
     par.stimulusDrawers = stimuli.calculateOrientations(...
-        par.numOrient, par.chronicOrient, par.randomOrder);
+        par.numOrient, par.chronicOrient, par.randomOrder, stimulusType);
     
     showStimuli(par);
 

@@ -61,11 +61,14 @@ classdef GratingStimulus < stimuli.CustomStimulus
 
 
 
-        function textureId = createGratingTexture(obj)
+        function textureId = createGratingTexture(obj, phase)
             % Create the actual grating texture.
             % First, a canvas is created which defines the X and Y coordinates.
             % Then, based on par.stimStyle draw a black and white grating
             % (stimTyle == 0) or a sinusoidal grating (stimStyle == 1).
+            %
+            % Parameters:
+            %   phase - phase of the grating, in radians.
             % 
             % This method returns the texture ID
 
@@ -77,10 +80,10 @@ classdef GratingStimulus < stimuli.CustomStimulus
 
             if obj.par.stimStyle == 0
                 % Black and White
-                grating = obj.white*round(0.5 + 0.5*cos(fr*canvas));
+                grating = obj.white*round(0.5 + 0.5*cos(fr*canvas + phase));
             else
                 % sinusoidal
-                grating = obj.grey + obj.cosBaseLine * cos(fr*canvas);
+                grating = obj.grey + obj.cosBaseLine * cos(fr*canvas + phase);
             end
 
             textureId = Screen('MakeTexture', obj.w, grating);
@@ -107,9 +110,9 @@ classdef GratingStimulus < stimuli.CustomStimulus
 
         
         function drawGrating(obj, srcRect, dstRect, textureId)
-            % Draw the grating into the object's window.
-            % If par.gabor == 1, also draw the Gaussian mask created in
-            % createGaussianMask
+            % Draw the grating with a specified texture identifier into the
+            % object's window.  If par.gabor == 1, also draw the Gaussian mask
+            % created in createGaussianMask
 
             Screen('DrawTexture', obj.w, textureId, srcRect, dstRect);
             if obj.par.gabor == 1

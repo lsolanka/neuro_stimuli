@@ -52,10 +52,9 @@ classdef MovingGratingStimulus < stimuli.GratingStimulus
             % And also properties necessary in super-class (GratingStimulus).
 
             setDrawingParameters@stimuli.GratingStimulus(obj, par);
-
             obj.shiftperframe = par.cyclesPerSecond * obj.p * obj.waitduration;
 
-            obj.textureId = obj.createGratingTexture();
+            obj.textureId = obj.createGratingTexture(0);
         end
 
 
