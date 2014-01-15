@@ -50,8 +50,10 @@ function par=getParam(handles)
     par.timeIntro    = str2double(get(handles.introTime,'String'));
 
     % those for the chronic stim
-    par.chronicOrient = str2double(get(handles.chronicOrient,'String'));
-    par.chronicTime   = str2double(get(handles.chronicTime,'String'));
+    par.chronicOrient       = str2double(get(handles.chronicOrient,'String'));
+    par.chronicTime         = str2double(get(handles.chronicTime,'String'));
+    par.chronicReversal     = get(handles.phaseReversalCheckBox, 'Value');
+    par.chronicReversalFreq = str2double(get(handles.reversalFreqEdit, 'String'));
     
     % those for Custom stim
     par.customSeq       = get(handles.customSeq, 'String');
