@@ -7,7 +7,7 @@
 %            duration
 %         3. Move the grating backward (this is optional).
 %       If movement is not bidirectional, the forward movement will take on the
-%       whole time duration. If it is bidirectional, the forward and bacward
+%       whole time duration. If it is bidirectional, the forward and backward
 %       movement will take half the drift time each.
 %   
 %
@@ -15,17 +15,10 @@
 %       Authors: Lukas Solanka, <lsolanka@gmail.com>
 %
 
-classdef MovingGratingStimulus < stimuli.CustomStimulus
+classdef MovingGratingStimulus < stimuli.GratingStimulus
 
     properties (Access = protected)
-        orientation     % Orientation of the grating (degrees)
-        orientationRad  % Orientation of the gratin in radians
-        textureId       % OpenGL grating texture ID
-        maskTextureId   % OpenGL gabor mask texture ID
-        cyclesPerPixel  % Grating cycles per texture pixels
-        p               % Pixels per cycle (1/cyclesPerPixel)
         shiftperframe   % Number of pixels to shift the grating per cycle
-        cosBaseLine     % Baseline color for cosine gratings
     end
 
     methods
@@ -51,100 +44,15 @@ classdef MovingGratingStimulus < stimuli.CustomStimulus
             % constructor) and drawing parameters for gratings.
             % 
             % par has to contain these properties:
-            %   screenWidth
-            %   screenDist
-            %   spatFreq
-            %   imageSize
             %   gabor
             %   cyclesPerSecond
-            %   stimStyle
+            % And also properties necessary in super-class (GratingStimulus).
 
-            setDrawingParameters@stimuli.CustomStimulus(obj, par);
+            setDrawingParameters@stimuli.GratingStimulus(obj, par);
 
-            %------------------ CALCULATE THE SPATIAL FREQUENCY IN PIXELS--------------
-            % if the mouse is looking forward, the angle from the centre of the screen
-            % to the edge is:
-            theta = atand(obj.par.screenWidth*0.5/obj.par.screenDist);
-            totalCycles = obj.par.spatFreq*2*theta;         % total cycles on the screen
-            obj.cyclesPerPixel = totalCycles/obj.par.imageSize; % cycles per pixel
-
-            % Alpha blending for a Gabor patch
-            if par.gabor == 1
-                Screen('BlendFunction', obj.w, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            end
-            
-            % Translate requested speed of the grating (in cycles per second) into
-            % a shift value in "pixels per frame", for given waitduration: This is
-            % the amount of pixels to shift our srcRect "aperture" in horizontal
-            % direction at each redraw:
-            obj.p = 1 / obj.cyclesPerPixel;  % pixels/cycle    
             obj.shiftperframe = par.cyclesPerSecond * obj.p * obj.waitduration;
-
-            obj.cosBaseLine = obj.white - obj.grey;
-
-            obj.createGratingTexture();
-            obj.createGaussianMask();
         end
 
-
-
-        function createGratingTexture(obj)
-            % Create the actual grating texture.
-            % First, a canvas is created which defines the X and Y coordinates.
-            % Then, based on par.stimStyle draw a black and white grating
-            % (stimTyle == 0) or a sinusoidal grating (stimTyle == 1).
-            % 
-            % After calling this method, obj.textureId can be used to draw the
-            % texture on the screen.
-
-            [x, y] = stimuli.CustomStimulus.createCanvas(obj.texsize, obj.cyclesPerPixel);
-            fr = obj.cyclesPerPixel*2*pi; % frequency (per pixel) in radians
-            
-            orientRad = obj.orientation * 2*pi/360;
-            canvas = x * cos(orientRad) + y * sin(orientRad);
-
-            if obj.par.stimStyle == 0
-                % Black and White
-                grating = obj.white*round(0.5 + 0.5*cos(fr*canvas));
-            else
-                % sinusoidal
-                grating = obj.grey + obj.cosBaseLine * cos(fr*canvas);
-            end
-
-            obj.textureId = Screen('MakeTexture', obj.w, grating);
-        end
-
-
-        function createGaussianMask(obj)
-            % Create a single gaussian transparency mask and store it to a
-            % texture: The mask must have the same size as the visible size of
-            % the grating to fully cover it. 
-            %
-            % We create a  two-layer texture: One unused luminance channel
-            % which we just fill with the same color as the background color of
-            % the screen 'grey'. The transparency (aka alpha) channel is filled
-            % with a gaussian (exp()) aperture mask:
-
-            texsize = obj.texsize;
-            mask          = ones(2*texsize+1, 2*texsize+1, 2) * obj.grey;
-            [x , y]       = meshgrid(-1*texsize:1*texsize, -1*texsize:1*texsize);
-            mask(:, :, 2) = obj.white * (1 - exp(-((x/90).^2)-((y/90).^2)));
-            obj.maskTextureId = Screen('MakeTexture', obj.w, mask);
-        end
-
-
-        
-        function drawGrating(obj, srcRect, dstRect)
-            % Draw the grating into the object's window.
-            % If par.gabor == 1, also draw the Gaussian mask created in
-            % createGaussianMask
-
-            Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
-            if obj.par.gabor == 1
-                Screen('DrawTexture', obj.w, obj.maskTextureId, srcRect, ...
-                        dstRect);
-            end
-        end
 
 
         function [xOffset, yOffset] = calculateShiftOffset(obj, offIdx)
