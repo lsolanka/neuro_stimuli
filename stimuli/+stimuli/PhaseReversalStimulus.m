@@ -91,14 +91,10 @@ classdef PhaseReversalStimulus < stimuli.GratingStimulus
                 end
             end
 
-
-            
             % ----------------------------------------------------------------
             % Export timing data
-            %staticStartTime = startTime;
-            %timingData = stimuli.GratingTiming(obj.orientation, ...
-            %        staticStartTime, forwardStartTime, obj.par.biDirectional, ...
-            %        backwardStartTime)
+            timingData = stimuli.PhaseReversalTiming(obj.orientation, ...
+                    startTime, lastTime, obj.reversalFreq);
 
         end % draw()
     end
