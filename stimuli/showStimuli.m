@@ -125,9 +125,16 @@ function showStimuli(par)
     
     fprintf(fid,'PARAMETERS:\n');
     if par.numOrient==1
-       fprintf(fid,'Chronic stimulus\n');   
-       fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
-       fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',par.chronicOrient);
+        if par.chronicReversal==0
+            fprintf(fid,'Chronic stimulus\n');   
+            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
+            fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',par.chronicOrient);
+        elseif par.chronicReversal==1
+            Seq_time=Seq_time{1};
+            fprintf(fid,'Chronic stimulus - Phase Reversal\n');   
+            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.chronicReversalFreq);
+            fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',par.chronicOrient);
+        end
     else
         if nRows>1
             fprintf(fid,'Retinotopy, row x col: %d x %d\n',nRows,nCols);
@@ -157,6 +164,12 @@ function showStimuli(par)
           time_vec=[time_vec; time_static];
           type_vec=[type_vec; 'U'];
           angle_vec=[angle_vec;0];
+        elseif  isprop(Seq_time{kk},'startT')
+          time_static=Seq_time{kk}.startT - par.Trigger_time;
+          fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Phase_reversal');
+          time_vec=[time_vec; time_static];
+          type_vec=[type_vec; 'P'];
+          angle_vec=[angle_vec;Seq_time{kk}.angle-90];
         else
         time_static=Seq_time{kk}.staticStartT - par.Trigger_time;
         fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Static');

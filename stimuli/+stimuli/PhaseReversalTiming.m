@@ -9,16 +9,17 @@ classdef PhaseReversalTiming < stimuli.GratingTiming
 
     properties (SetAccess = private)
         startT
-        lastT
+        %lastT
         reversalFreq
     end
 
     methods
-        function this = PhaseReversalTiming(angle, startT, lastT, reversalFreq)
+        %function this = PhaseReversalTiming(angle, startT, lastT, reversalFreq)
+        function this = PhaseReversalTiming(angle, startT, reversalFreq)
             this@stimuli.GratingTiming(angle);
 
             this.startT = startT;
-            this.lastT  = lastT;
+            %this.lastT  = lastT;
             this.reversalFreq = reversalFreq;
         end
     end
