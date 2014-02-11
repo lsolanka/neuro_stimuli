@@ -69,7 +69,7 @@ classdef UniformStimulus < stimuli.CustomStimulus
             %
             % Return the timing information: UniformTiming
 
-            srcRect = [0 0 obj.visiblesize obj.visiblesize];
+            srcRect = [0 0 obj.visiblesizeX obj.visiblesizeY];
             Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
             startTime   = Screen('Flip', obj.w, 0)
             endTime     = startTime + obj.duration;

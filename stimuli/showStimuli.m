@@ -29,17 +29,13 @@ function showStimuli(par)
         [white, black, grey] = CustomStimulus.getColors(par.screenNumber);
         [w screenRect] = Screen('OpenWindow', par.screenNumber, grey); %, [0, 0, 400, 400]);
 
-        % Initialise the drawers. This should be before the actual drawing
-        % begins.
-        par.w = w;
-        for drawer = stimulusDrawers
-            drawer.setDrawingParameters(par);
-        end
-
         % Create individual rectangles, depending on the nRows and nCols
         % parameters
         screenWidth  = screenRect(3) - screenRect(1)
         screenHeight = screenRect(4) - screenRect(2)
+        par.imageSizeX = screenWidth;
+        par.imageSizeY = screenHeight;
+        
         width        = floor(screenWidth / nCols);
         height       = floor(screenHeight / nRows);
 
@@ -55,6 +51,14 @@ function showStimuli(par)
             end
         end
 
+        % Initialise the drawers. This should be before the actual drawing
+        % begins.
+        par.w = w;
+        for drawer = stimulusDrawers
+            drawer.setDrawingParameters(par);
+        end
+        
+        
         % --------------------------------------------------------------------
 
 

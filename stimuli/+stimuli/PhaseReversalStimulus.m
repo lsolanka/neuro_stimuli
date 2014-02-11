@@ -66,7 +66,7 @@ classdef PhaseReversalStimulus < stimuli.GratingStimulus
             % Returns:
             %   timingData - A GratingTiming object.
 
-            srcRect = [0 0 obj.visiblesize obj.visiblesize];
+            srcRect = [0 0 obj.visiblesizeX obj.visiblesizeY];
 
 
             flipTime = 1 / obj.reversalFreq;

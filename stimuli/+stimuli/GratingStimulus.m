@@ -30,7 +30,8 @@ classdef GratingStimulus < stimuli.CustomStimulus
             %   screenWidth
             %   screenDist
             %   spatFreq
-            %   imageSize
+            %   imageSizeX
+            %   imageSizeY
             %   gabor
             %   stimStyle
 
@@ -40,8 +41,8 @@ classdef GratingStimulus < stimuli.CustomStimulus
             % if the mouse is looking forward, the angle from the centre of the screen
             % to the edge is:
             theta = atand(obj.par.screenWidth*0.5/obj.par.screenDist);
-            totalCycles = obj.par.spatFreq*2*theta;         % total cycles on the screen
-            obj.cyclesPerPixel = totalCycles/obj.par.imageSize; % cycles per pixel
+            totalCycles = obj.par.spatFreq*2*theta;         % total cycles on the screen width
+            obj.cyclesPerPixel = totalCycles/obj.par.imageSizeX; % cycles per pixel
 
             % Alpha blending for a Gabor patch
             if par.gabor == 1

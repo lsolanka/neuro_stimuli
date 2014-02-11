@@ -109,12 +109,15 @@ classdef MovingGratingStimulus < stimuli.GratingStimulus
             startTime = Screen('Flip', obj.w, lastEndTime + (obj.waitframes - 0.5) * obj.ifi);
             endTime = startTime + T;
 
+            xdim=round(obj.visiblesizeX./(obj.par.nCols));
+            ydim=round(obj.visiblesizeY./(obj.par.nRows));
+            
             offIdx = startOffset;
             currTime = startTime;
             while(currTime < endTime)
                 [xOffset, yOffset] = obj.calculateShiftOffset(offIdx);
-                srcRect = [xOffset yOffset xOffset + obj.visiblesize ...
-                        yOffset + obj.visiblesize];
+                srcRect = [xOffset yOffset xOffset + xdim ...
+                        yOffset + ydim];
                 obj.drawGrating(srcRect, dstRect, obj.textureId);
                 currTime = Screen('Flip', obj.w, currTime + (obj.waitframes - 0.5) * obj.ifi);
 
@@ -145,7 +148,9 @@ classdef MovingGratingStimulus < stimuli.GratingStimulus
 
             % ----------------------------------------------------------------
             % Static grating
-            srcRect = [0 0 obj.visiblesize obj.visiblesize];
+            xdim=round(obj.visiblesizeX./(obj.par.nCols));
+            ydim=round(obj.visiblesizeY./(obj.par.nRows));
+            srcRect = [0 0 xdim ydim];
 
             obj.drawGrating(srcRect, dstRect, obj.textureId);
             startTime = Screen('Flip', obj.w);

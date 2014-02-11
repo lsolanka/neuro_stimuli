@@ -44,7 +44,6 @@ function par=getParam(handles)
     par.screenDist   = str2double(get(handles.distScreen,'String'));
     par.screenWidth  = str2double(get(handles.widthScreen,'String'));
     par.screenNumber = str2double(get(handles.numberScreen,'String'));
-    par.imageSize    = str2double(get(handles.sizeImage,'String'));
     par.gaussStDev   = str2double(get(handles.stdevGauss,'String'));
     par.gaussTrim    = str2double(get(handles.trimGauss,'String'));
     par.timeIntro    = str2double(get(handles.introTime,'String'));

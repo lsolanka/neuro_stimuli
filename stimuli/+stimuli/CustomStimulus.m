@@ -28,7 +28,8 @@ classdef (Abstract) CustomStimulus < matlab.mixin.Heterogeneous & handle
         % This is the visible size of the grating. It is twice the half-width
         % of the texture plus one pixel to make sure it has an odd number of
         % pixels and is therefore symmetric around the center of the texture:
-        visiblesize
+        visiblesizeX
+        visiblesizeY
         white           % Color value for white
         black           % Color value for black
         grey            % Color value for grey
@@ -52,8 +53,12 @@ classdef (Abstract) CustomStimulus < matlab.mixin.Heterogeneous & handle
             obj.par = par;
             obj.w = par.w;
 
-            obj.texsize = obj.par.imageSize / 2;
-            obj.visiblesize = 2*obj.texsize+1;
+           
+            obj.texsize = obj.par.imageSizeX / 2;
+            
+            obj.visiblesizeX = obj.par.imageSizeX+1;
+            obj.visiblesizeY = obj.par.imageSizeY+1;
+            
             [obj.white, obj.black, obj.grey] = ...
                     stimuli.CustomStimulus.getColors(obj.par.screenNumber);
 
@@ -77,9 +82,10 @@ classdef (Abstract) CustomStimulus < matlab.mixin.Heterogeneous & handle
         function [x, y] = createCanvas(texsize, cyclesPerPixel)
             % Create the X and Y positions for the texture. These can be used
             % in sub-classes to draw a texture.
-
+            
             p = ceil(1/cyclesPerPixel);
             [x,y] = meshgrid(-texsize - p:texsize + 2*p, -texsize - p:texsize + 2*p);
+
         end
 
         function [white, black, grey] = getColors(screenNumber)
