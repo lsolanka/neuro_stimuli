@@ -41,12 +41,14 @@ function par=getParam(handles)
 
 
     % and those from the parameters box.....
-    par.screenDist   = str2double(get(handles.distScreen,'String'));
-    par.screenWidth  = str2double(get(handles.widthScreen,'String'));
-    par.screenNumber = str2double(get(handles.numberScreen,'String'));
-    par.gaussStDev   = str2double(get(handles.stdevGauss,'String'));
-    par.gaussTrim    = str2double(get(handles.trimGauss,'String'));
-    par.timeIntro    = str2double(get(handles.introTime,'String'));
+    par.screenDist     = str2double(get(handles.distScreen,'String'));
+    par.screenWidth    = str2double(get(handles.widthScreen,'String'));
+    par.screenNumber   = str2double(get(handles.numberScreen,'String'));
+    par.gaussStDev     = str2double(get(handles.stdevGauss,'String'));
+    par.gaussTrim      = str2double(get(handles.trimGauss,'String'));
+    par.timeIntro      = str2double(get(handles.introTime,'String'));
+    par.waitForTrigger = get(handles.triggerWaitCheckBox, 'Value');
+    par.splitScreen    = get(handles.splitScreenCheckBox, 'Value');
 
     % those for the chronic stim
     par.chronicOrient       = str2double(get(handles.chronicOrient,'String'));

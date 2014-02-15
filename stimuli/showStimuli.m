@@ -57,27 +57,27 @@ function showStimuli(par)
         for drawer = stimulusDrawers
             drawer.setDrawingParameters(par);
         end
-        
-        
         % --------------------------------------------------------------------
 
 
-        % ADD THE TRIGGER HERE - Paolo. (Comment this if it runs on our
-        % laptops!
-        
-%          s = daq.createSession('ni');
-%          s.addDigitalChannel('Dev1', 'Port1/Line0:7', 'InputOnly');
-%          
-%          a=0;
-%          
-%          while a<1 
-%            %pause(0.0005);
-%            testt=s.inputSingleScan;
-%            a=testt(end);
-%            
-%          end
+        % --------------------------------------------------------------------
+        % Trigger waiting loop
+        if par.waitForTrigger
+            s = daq.createSession('ni');
+            s.addDigitalChannel('Dev1', 'Port1/Line0:7', 'InputOnly');
+            
+            a=0;
+            
+            while a<1 
+              %pause(0.0005);
+              testt=s.inputSingleScan;
+              a=testt(end);
+              
+            end
+        end
 
         par.Trigger_time=GetSecs;
+        % --------------------------------------------------------------------
     
 
         % --------------------------------------------------------------------
