@@ -33,6 +33,11 @@ function showStimuli(par)
         % parameters
         screenWidth  = screenRect(3) - screenRect(1)
         screenHeight = screenRect(4) - screenRect(2)
+
+        if par.splitScreen
+            screenWidth = screenWidth / 2
+        end
+
         par.imageSizeX = screenWidth;
         par.imageSizeY = screenHeight;
         

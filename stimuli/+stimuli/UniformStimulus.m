@@ -71,10 +71,19 @@ classdef UniformStimulus < stimuli.CustomStimulus
 
             srcRect = [0 0 obj.visiblesizeX obj.visiblesizeY];
             Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
+            if obj.par.splitScreen
+                copyDstRect = dstRect;
+                copyDstRect(1) = copyDstRect(1) + obj.par.imageSizeX;
+                copyDstRect(3) = copyDstRect(3) + obj.par.imageSizeX;
+                Screen('DrawTexture', obj.w, obj.textureId, srcRect, copyDstRect);
+            end
             startTime   = Screen('Flip', obj.w, 0)
             endTime     = startTime + obj.duration;
             % Redraw to avoid any glitches
             Screen('DrawTexture', obj.w, obj.textureId, srcRect, dstRect);
+            if obj.par.splitScreen
+                Screen('DrawTexture', obj.w, obj.textureId, srcRect, copyDstRect);
+            end
             flipEndTime = Screen('Flip', obj.w, endTime)
 
             timing = stimuli.UniformTiming(startTime, flipEndTime);

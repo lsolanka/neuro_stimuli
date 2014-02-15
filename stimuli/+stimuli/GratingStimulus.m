@@ -120,6 +120,15 @@ classdef GratingStimulus < stimuli.CustomStimulus
                 Screen('DrawTexture', obj.w, obj.maskTextureId, srcRect, ...
                         dstRect);
             end
+            if obj.par.splitScreen
+                dstRect(1) = dstRect(1) + obj.par.imageSizeX;
+                dstRect(3) = dstRect(3) + obj.par.imageSizeX;
+                Screen('DrawTexture', obj.w, textureId, srcRect, dstRect);
+                if obj.par.gabor == 1
+                    Screen('DrawTexture', obj.w, obj.maskTextureId, srcRect, ...
+                            dstRect);
+                end
+            end
         end
 
 
