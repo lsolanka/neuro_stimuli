@@ -174,11 +174,15 @@ function showStimuli(par)
           type_vec=[type_vec; 'U'];
           angle_vec=[angle_vec;0];
         elseif  isprop(Seq_time{kk},'startT')
-          time_static=Seq_time{kk}.startT - par.Trigger_time;
-          fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Phase_reversal');
-          time_vec=[time_vec; time_static];
-          type_vec=[type_vec; 'P'];
-          angle_vec=[angle_vec;Seq_time{kk}.angle-90];
+            time_static=Seq_time{kk}.startT - par.Trigger_time;
+            if kk == 1
+                fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Static');
+            else
+                fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Phase_reversal');
+            end
+            time_vec=[time_vec; time_static];
+            type_vec=[type_vec; 'P'];
+            angle_vec=[angle_vec;Seq_time{kk}.angle-90];
         else
         time_static=Seq_time{kk}.staticStartT - par.Trigger_time;
         fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Static');

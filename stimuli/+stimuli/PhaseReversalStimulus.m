@@ -65,19 +65,29 @@ classdef PhaseReversalStimulus < stimuli.GratingStimulus
             %
             % Returns:
             %   timingData - A GratingTiming object.
+            xdim = round(obj.visiblesizeX./(obj.par.nCols));
+            ydim = round(obj.visiblesizeY./(obj.par.nRows));
+            srcRect = [0 0 xdim ydim];
+            timingData = {};
 
-            srcRect = [0 0 obj.visiblesizeX obj.visiblesizeY];
+            % ----------------------------------------------------------------
+            % Static grating
+            obj.drawGrating(srcRect, dstRect, obj.textureId);
+            startTime = Screen('Flip', obj.w);
+            obj.drawGrating(srcRect, dstRect, obj.textureId);
+            timingData{1} = stimuli.PhaseReversalTiming(obj.orientation, ...
+                    startTime, obj.reversalFreq);
 
-
+            % ----------------------------------------------------------------
+            % Phase reversal
             flipTime = 1 / obj.reversalFreq;
             numReversals = floor(obj.par.timeDrift * obj.reversalFreq);
 
             obj.drawGrating(srcRect, dstRect, obj.textureId);
-            startTime = Screen('Flip', obj.w);
-            lastTime=startTime
-            timingData = {};
-            timingData{1}= stimuli.PhaseReversalTiming(obj.orientation, ...
+            lastTime = Screen('Flip', obj.w, startTime + obj.par.timeStatic);
+            timingData{2}= stimuli.PhaseReversalTiming(obj.orientation, ...
                     lastTime, obj.reversalFreq);
+
             for reversalIdx = 2:numReversals
                 if mod(reversalIdx, 2) == 0
                     currentId = obj.reversedTextureId;
@@ -88,22 +98,18 @@ classdef PhaseReversalStimulus < stimuli.GratingStimulus
                 obj.drawGrating(srcRect, dstRect, currentId);
                 lastTime = Screen('Flip', obj.w, lastTime + flipTime);
                 
-                timingData{reversalIdx}= stimuli.PhaseReversalTiming(obj.orientation, ...
+                timingData{reversalIdx+1} = stimuli.PhaseReversalTiming(obj.orientation, ...
                     lastTime, obj.reversalFreq);
 
                 if KbCheck
                     return;
                 end
-                
-                
-                
             end
 
-            % ----------------------------------------------------------------
-            % Export timing data
-            %timingData = stimuli.PhaseReversalTiming(obj.orientation, ...
-            %        startTime, lastTime, obj.reversalFreq);
-
+            % One more flip with the last currentId; do not save
+            obj.drawGrating(srcRect, dstRect, currentId);
+            Screen('Flip', obj.w, lastTime + flipTime);
         end % draw()
+
     end
 end
