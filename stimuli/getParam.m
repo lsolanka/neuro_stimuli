@@ -29,8 +29,11 @@ function par=getParam(handles)
         otherwise, par.stimStyle = 1;
     end
 
+    par.biDirectional = 0;
+    par.movingReversal = 0;
     switch get(get(handles.movingModePanel,'SelectedObject'),'Tag')
         case 'biDirectional',  par.biDirectional = 1;
+        case 'phaseReversal',  par.bidirectional = 0; par.movingReversal = 1;
         otherwise, par.biDirectional = 0;
     end
 
