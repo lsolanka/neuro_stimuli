@@ -133,29 +133,49 @@ function showStimuli(par)
  
     
     fprintf(fid,'PARAMETERS:\n');
-    if par.numOrient==1
-        if par.chronicReversal==0
+    if par.numOrient==1  % THESE ARE THE CHRONIC STIMULI
+        if par.chronicReversal==0 %grating
             fprintf(fid,'Chronic stimulus\n');   
             fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
             fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',par.chronicOrient);
         elseif par.chronicReversal==1
-            Seq_time=Seq_time{1};
+            %Seq_time=Seq_time{1}; %phase rev
             fprintf(fid,'Chronic stimulus - Phase Reversal\n');   
             fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.chronicReversalFreq);
             fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',par.chronicOrient);
         end
-    else
-        if nRows>1
+        
+    elseif nRows>1 % THIS IS THE RETINOTROPY
+        if par.movingReversal == 0 %grating
             fprintf(fid,'Retinotopy, row x col: %d x %d\n',nRows,nCols);
-        elseif isfield(par,'Custom_seq')
+            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
+            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
+
+        elseif par.movingReversal == 1 %phase rev
+            fprintf(fid,'Retinotopy, row x col: %d x %d - Phase Reversal\n',nRows,nCols);
+            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.chronicReversalFreq);
+            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
+        end   
+            
+    elseif isfield(par,'Custom_seq') % THIS IS THE CUSTOM SEQUENCY
             if par.Custom_seq==1
                fprintf(fid,'Custom Sequence: %s \n',par.customSeq); 
             end
-        else
-           fprintf(fid,'Moving gratings \n'); 
+            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
+            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
+
+            
+            
+    else % THIS IS THE ORIENTATION LIST
+        if par.movingReversal == 0 %grating
+            fprintf(fid,'Moving gratings \n');         
+            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
+            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
+        elseif par.movingReversal == 1 %phase reversal
+            fprintf(fid,'Phase reversal \n');         
+            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.chronicReversalFreq);
+            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);   
         end
-        fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
-        fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
     end
     
     fprintf(fid,'\nTime(s)\tOrient.(deg)-Type\n');
@@ -167,43 +187,34 @@ function showStimuli(par)
      while kk<length(Seq_time)
         kk=kk+1;
         
-        if isprop(Seq_time{kk},'startTime')
-          time_static=Seq_time{kk}.startTime - par.Trigger_time; 
-          fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,0,'Uniform');  
-          time_vec=[time_vec; time_static];
-          type_vec=[type_vec; 'U'];
-          angle_vec=[angle_vec;0];
-        elseif  isprop(Seq_time{kk},'startT')
-            time_static=Seq_time{kk}.startT - par.Trigger_time;
-            if kk == 1
-                fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Static');
-            else
-                fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Phase_reversal');
-            end
+        if isprop(Seq_time{kk},'startTime') % THIS IS FOR UNIFORM GRAY BLACK SCREEN
+            time_static=Seq_time{kk}.startTime - par.Trigger_time; 
+            fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,0,'Uniform');  
             time_vec=[time_vec; time_static];
-            type_vec=[type_vec; 'P'];
+            type_vec=[type_vec; 'U'];
+            angle_vec=[angle_vec;0];
+ 
+        else % THIS IS FOR THE REST
+            time_static=Seq_time{kk}.staticStartT - par.Trigger_time;
+            fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Static');
+            time_vec=[time_vec; time_static];
+            type_vec=[type_vec; 'S'];
             angle_vec=[angle_vec;Seq_time{kk}.angle-90];
-        else
-        time_static=Seq_time{kk}.staticStartT - par.Trigger_time;
-        fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_static,Seq_time{kk}.angle-90,'Static');
-        time_vec=[time_vec; time_static];
-        type_vec=[type_vec; 'S'];
-        angle_vec=[angle_vec;Seq_time{kk}.angle-90];
         
-        time_forward=Seq_time{kk}.forwardStartT - par.Trigger_time;
-        fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_forward,Seq_time{kk}.angle-90,'Forward');
-        time_vec=[time_vec; time_forward];
-        type_vec=[type_vec; 'F'];
-        angle_vec=[angle_vec;Seq_time{kk}.angle-90];
+            time_forward=Seq_time{kk}.forwardStartT - par.Trigger_time;
+            fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_forward,Seq_time{kk}.angle-90,'Forward');
+            time_vec=[time_vec; time_forward];
+            type_vec=[type_vec; 'F'];
+            angle_vec=[angle_vec;Seq_time{kk}.angle-90];
         
         
-        if Seq_time{kk}.bidirectional==1
-           time_backward=Seq_time{kk}.backwardStartT - par.Trigger_time;
-           fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_backward,Seq_time{kk}.angle-90,'Backward');
-           time_vec=[time_vec; time_backward];
-           type_vec=[type_vec; 'B'];
-           angle_vec=[angle_vec;Seq_time{kk}.angle-90];
-        end
+            if Seq_time{kk}.bidirectional==1
+                time_backward=Seq_time{kk}.backwardStartT - par.Trigger_time;
+                fprintf(fid,'%3.4f\t%3.1f\t%s\n',time_backward,Seq_time{kk}.angle-90,'Backward');
+                time_vec=[time_vec; time_backward];
+                type_vec=[type_vec; 'B'];
+                angle_vec=[angle_vec;Seq_time{kk}.angle-90];
+            end
         end
      end
      

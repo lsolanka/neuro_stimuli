@@ -5,6 +5,8 @@
 %       Authors: Lukas Solanka, <lsolanka@gmail.com>
 %
 
+% NOT USED!
+
 classdef PhaseReversalTiming < stimuli.GratingTiming
 
     properties (SetAccess = private)

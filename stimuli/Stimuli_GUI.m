@@ -7,7 +7,7 @@ function varargout = Stimuli_GUI(varargin)
 %      the existing singleton*.
 %
 %      STIMULI_GUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in STIMULI_GUI.M with the given input arguments.
+%      function named CALLBACK in STIMULI_GUI.M with the given input a§rguments.
 %
 %      STIMULI_GUI('Property','Value',...) creates a new STIMULI_GUI or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
@@ -70,7 +70,7 @@ set(handles.tempFreq,'String','1');
 
 % Parameters section
 set(handles.distScreen,'String','30');
-set(handles.widthScreen,'String','34');
+set(handles.widthScreen,'String','52');
 set(handles.numberScreen,'String','0');
 %set(handles.sizeImage,'String','800');
 set(handles.stdevGauss,'String','40');
