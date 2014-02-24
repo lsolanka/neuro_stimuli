@@ -630,6 +630,9 @@ function runGratings_Callback(hObject, eventdata, handles)
     if par.movingReversal == 0
         type = stimuli.StimulusType.MovingGrating;
     else
+        if par.chronicReversalFreq*par.timeDrift<2
+           error('Increase reversal frequency or the drift time! (Freq * Time > 2)') 
+        end
         type = stimuli.StimulusType.PhaseReversal;
     end
     par.stimulusDrawers = stimuli.calculateOrientations(...
@@ -653,6 +656,9 @@ function runRetinotopy_Callback(hObject, eventdata, handles)
     if par.movingReversal == 0
         type = stimuli.StimulusType.MovingGrating;
     else
+        if par.chronicReversalFreq*par.timeDrift<2
+           error('Increase reversal frequency or the drift time! (Freq * Time > 2)') 
+        end
         type = stimuli.StimulusType.PhaseReversal;
     end
     par.stimulusDrawers = stimuli.calculateOrientations(...
@@ -671,6 +677,9 @@ function runChronic_Callback(hObject, eventdata, handles)
     par.nRows=1;
 
     if (par.chronicReversal)
+        if par.chronicReversalFreq*par.chronicTime<2
+           error('Increase reversal frequency or the chronic time! (Freq * Time > 2)') 
+        end
         stimulusType = stimuli.StimulusType.PhaseReversal;
     else
         stimulusType = stimuli.StimulusType.MovingGrating;
