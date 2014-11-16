@@ -118,7 +118,7 @@ function showStimuli(par)
     % --------------------SAVE THE ORDER AND TIME OF EVENTS------------------
   
     
-    formatOut='yymmdd_HHMMSS';
+    formatOut='yyyymmdd_HHMMSS';
     
     name1=datestr(c,formatOut);
     namefolder=datestr(c,'yymmdd/');
