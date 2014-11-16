@@ -136,49 +136,48 @@ function showStimuli(par)
     if par.numOrient==1  % THESE ARE THE CHRONIC STIMULI
         if par.chronicReversal==0 %grating
             fprintf(fid,'Chronic stimulus\n');   
-            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
-            fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',par.chronicOrient);
+            printGratingTiming(fid, par)
+            fprintf(fid,'Chronic panel, orientation (deg): %.0f\n', ...
+                    par.chronicOrient);
         elseif par.chronicReversal==1
             %Seq_time=Seq_time{1}; %phase rev
             fprintf(fid,'Chronic stimulus - Phase Reversal\n');   
-            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.chronicReversalFreq);
+            printReversalGratingTiming(fid, par)
             fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',par.chronicOrient);
         end
         
     elseif nRows>1 % THIS IS THE RETINOTROPY
         if par.movingReversal == 0 %grating
             fprintf(fid,'Retinotopy, row x col: %d x %d\n',nRows,nCols);
-            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
-            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
-
+            printGratingTiming(fid, par)
+            printGratingParams(fid, par)
         elseif par.movingReversal == 1 %phase rev
             fprintf(fid,'Retinotopy, row x col: %d x %d - Phase Reversal\n',nRows,nCols);
-            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.chronicReversalFreq);
-            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
+            printReversalGratingTiming(fid, par)
+            printGratingParams(fid, par)
         end   
             
     elseif isfield(par,'Custom_seq') % THIS IS THE CUSTOM SEQUENCY
             if par.Custom_seq==1
                fprintf(fid,'Custom Sequence: %s \n',par.customSeq); 
             end
-            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
-            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
-
+            printGratingTiming(fid, par)
+            printGratingParams(fid, par)
             
             
     else % THIS IS THE ORIENTATION LIST
         if par.movingReversal == 0 %grating
             fprintf(fid,'Moving gratings \n');         
-            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.cyclesPerSecond);
-            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);
+            printGratingTiming(fid, par)
+            printGratingParams(fid, par)
         elseif par.movingReversal == 1 %phase reversal
             fprintf(fid,'Phase reversal \n');         
-            fprintf(fid,'Drift time (s): %.1f, Static time(s): %.1f, Spatial Frequency (cyc/deg):%.2f, Temporal Frequency (cyc/s): %.1f\n',par.timeDrift,par.timeStatic,par.spatFreq,par.chronicReversalFreq);
-            fprintf(fid,'N orient.: %d, Random (1=YES,0=NO): %d, Bidirectional (1=YES,0=NO): %d, Stim. Style (1=sin,0=BW): %d, Gabor (1=YES,0=NO): %d\n', par.numOrient, par.randomOrder,par.biDirectional,par.stimStyle,par.gabor);   
+            printReversalGratingTiming(fid, par)
+            printGratingParams(fid, par)
         end
     end
     
-    fprintf(fid,'\nTime(s)\tOrient.(deg)-Type\n');
+    fprintf(fid,'\nTime(s)\tOrient.(deg)\tType\n');
      time_vec=[];
      angle_vec=[];
      type_vec={};
@@ -229,3 +228,35 @@ function showStimuli(par)
     fclose(fid);
      
 
+function printGratingTiming(fid, par)
+    fprintf(fid, ['Drift time (s): %.1f, ', ...
+                  'Static time(s): %.1f, ', ...
+                  'Spatial Frequency (cyc/deg):%.2f, ', ...
+                  'Temporal Frequency (cyc/s): %.1f\n'], ...
+                  par.timeDrift, ...
+                  par.timeStatic, ...
+                  par.spatFreq, ...
+                  par.cyclesPerSecond);
+
+function printReversalGratingTiming(fid, par)
+    fprintf(fid, ['Drift time (s): %.1f, ', ...
+                  'Static time(s): %.1f, ', ...
+                  'Spatial Frequency (cyc/deg):%.2f, ', ...
+                  'Reversal Frequency (cyc/s): %.1f\n'], ...
+                  par.timeDrift, ...
+                  par.timeStatic, ...
+                  par.spatFreq, ...
+                  par.chronicReversalFreq);
+
+function printGratingParams(fid, par)
+    fprintf(fid, ...
+            ['N orient.: %d, ', ...
+             'Random (1=YES,0=NO): %d, ', ...
+             'Bidirectional (1=YES,0=NO): %d, ', ...
+             'Stim. Style (1=sin,0=BW): %d, ', ...
+             'Gabor (1=YES,0=NO): %d\n'], ...
+            par.numOrient, ...
+            par.randomOrder, ...
+            par.biDirectional, ...
+            par.stimStyle, ...
+            par.gabor);
