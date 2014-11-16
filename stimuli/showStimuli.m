@@ -18,6 +18,10 @@ function showStimuli(par)
     nCols           = par.nCols
     nRows           = par.nRows
 
+    % Indicate to the user we might be busy
+    [h, figure] = gcbo;
+    set(figure, 'Pointer', 'watch');
+    drawnow;
     
     try
         % --------------------------------------------------------------------
@@ -64,6 +68,9 @@ function showStimuli(par)
         end
         % --------------------------------------------------------------------
 
+        % Reset the cursor when before we start
+        set(figure, 'Pointer', 'arrow');
+        drawnow;
 
         % --------------------------------------------------------------------
         % Trigger waiting loop
