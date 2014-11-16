@@ -14,7 +14,8 @@
 classdef PhaseReversalStimulus < stimuli.GratingStimulus
 
     properties (Access = protected)
-        reversalFreq;
+        reversalFreq; % This will be double of the number in the GUI - request
+                      % from the Rochefort lab. One cycle is both phases.
         textureId;
         reversedTextureId;
     end
@@ -47,7 +48,7 @@ classdef PhaseReversalStimulus < stimuli.GratingStimulus
             % And also properties necessary in super-class (GratingStimulus).
 
             setDrawingParameters@stimuli.GratingStimulus(obj, par);
-            obj.reversalFreq = par.chronicReversalFreq;
+            obj.reversalFreq = par.chronicReversalFreq * 2.;
 
             obj.textureId = obj.createGratingTexture(0);
             obj.reversedTextureId = obj.createGratingTexture(pi);
