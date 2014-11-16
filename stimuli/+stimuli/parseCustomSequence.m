@@ -14,7 +14,7 @@
 %   Copyright (C) 2013, NeuroAgile.
 %       Authors: Lukas Solanka, <lsolanka@gmail.com>
 %
-function returnSequence = parseCustomSequence(seqStr)
+function returnSequence = parseCustomSequence(seqStr, type)
 
     if ~isa(seqStr, 'char')
         id = 'stimuli:parseCustomSequence:InvalidValue';
@@ -43,8 +43,16 @@ function returnSequence = parseCustomSequence(seqStr)
                 throwInvalidCharValue(s);
             end
         else
-            % Grating stimulus specified by an angle
-            returnSequence = [returnSequence stimuli.MovingGratingStimulus(angle+90)];
+            if type == stimuli.StimulusType.MovingGrating
+                % Moving grating stimulus specified by an angle
+                returnSequence = [returnSequence stimuli.MovingGratingStimulus(angle+90)];
+            elseif type == stimuli.StimulusType.PhaseReversal
+                returnSequence = [returnSequence stimuli.PhaseReversalStimulus(angle+90)];
+            else
+                msg = strcat('Unknown stimulus type' + type.char());
+                e = MException('stimuli:calculateOrientations:InvalidValue', msg);
+                throw(e);
+            end
         end
     end
     

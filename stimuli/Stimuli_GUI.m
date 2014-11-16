@@ -620,13 +620,7 @@ end
 % ----------------------------------------------------------------------------
 % Callbacks for button presses
 
-function runGratings_Callback(hObject, eventdata, handles)
-    % initialise the variables
-    par=getParam(handles);
-
-    par.nCols = 1;
-    par.nRows = 1;
-    par.chronicOrient = 0;
+function type = determineGratingType(par)
     if par.movingReversal == 0
         type = stimuli.StimulusType.MovingGrating;
     else
@@ -635,11 +629,20 @@ function runGratings_Callback(hObject, eventdata, handles)
         end
         type = stimuli.StimulusType.PhaseReversal;
     end
+
+
+function runGratings_Callback(hObject, eventdata, handles)
+    % initialise the variables
+    par=getParam(handles);
+
+    par.nCols = 1;
+    par.nRows = 1;
+    par.chronicOrient = 0;
+    type = determineGratingType(par)
     par.stimulusDrawers = stimuli.calculateOrientations(...
         par.numOrient, par.chronicOrient, par.randomOrder, ...
         type);
     showStimuli(par);
-
 
 
 function runRetinotopy_Callback(hObject, eventdata, handles)
@@ -697,7 +700,8 @@ function runCustom_Callback(hObject, eventdata, handles)
     par.nRows = 1;    
 
     try
-        par.stimulusDrawers = stimuli.parseCustomSequence(par.customSeq);
+        type = determineGratingType(par)
+        par.stimulusDrawers = stimuli.parseCustomSequence(par.customSeq, type);
         par.Custom_seq=1;
         showStimuli(par);
     catch e
