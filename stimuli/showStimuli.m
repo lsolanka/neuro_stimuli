@@ -136,33 +136,42 @@ function showStimuli(par)
     if par.numOrient==1  % THESE ARE THE CHRONIC STIMULI
         if par.chronicReversal==0 %grating
             fprintf(fid,'Chronic stimulus\n');   
-            printGratingTiming(fid, par)
+            printGratingTiming(fid, par);
             fprintf(fid,'Chronic panel, orientation (deg): %.0f\n', ...
                     par.chronicOrient);
         elseif par.chronicReversal==1
             %Seq_time=Seq_time{1}; %phase rev
             fprintf(fid,'Chronic stimulus - Phase Reversal\n');   
-            printReversalGratingTiming(fid, par)
+            printReversalGratingTiming(fid, par);
             fprintf(fid,'Chronic panel, orientation (deg): %.0f\n',par.chronicOrient);
         end
         
     elseif nRows>1 % THIS IS THE RETINOTROPY
         if par.movingReversal == 0 %grating
             fprintf(fid,'Retinotopy, row x col: %d x %d\n',nRows,nCols);
-            printGratingTiming(fid, par)
-            printGratingParams(fid, par)
+            printGratingTiming(fid, par);
+            printGratingParams(fid, par);
         elseif par.movingReversal == 1 %phase rev
             fprintf(fid,'Retinotopy, row x col: %d x %d - Phase Reversal\n',nRows,nCols);
-            printReversalGratingTiming(fid, par)
-            printGratingParams(fid, par)
+            printReversalGratingTiming(fid, par);
+            printGratingParams(fid, par);
         end   
             
-    elseif isfield(par,'Custom_seq') % THIS IS THE CUSTOM SEQUENCY
+    elseif isfield(par,'Custom_seq') % THIS IS THE CUSTOM SEQUENCE
             if par.Custom_seq==1
-               fprintf(fid,'Custom Sequence: %s \n',par.customSeq); 
+                if par.movingReversal == 0 % grating
+                    fprintf(fid,'Custom Sequence: %s \n',par.customSeq); 
+                    printGratingTiming(fid, par)
+                else % phase reversal
+                    fprintf(fid,'Custom Sequence: %s - Phase reversal\n', ...
+                            par.customSeq); 
+                    printReversalGratingTiming(fid, par)
+                end
+                printGratingParams(fid, par);
+            else
+                error(['Custom sequence printing requested ', ...
+                       'but par.Custom_seq == 0!']);
             end
-            printGratingTiming(fid, par)
-            printGratingParams(fid, par)
             
             
     else % THIS IS THE ORIENTATION LIST
