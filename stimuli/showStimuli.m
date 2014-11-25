@@ -18,11 +18,6 @@ function showStimuli(par)
     nCols           = par.nCols
     nRows           = par.nRows
 
-    % Indicate to the user we might be busy
-    [h, figure] = gcbo;
-    set(figure, 'Pointer', 'watch');
-    drawnow;
-    
     try
         % --------------------------------------------------------------------
         %         This code has to be before the trigger waiting loop
@@ -32,6 +27,9 @@ function showStimuli(par)
         Screen('Preference', 'VisualDebugLevel', 1); % to avoid the white welcome screen
         [white, black, grey] = CustomStimulus.getColors(par.screenNumber);
         [w screenRect] = Screen('OpenWindow', par.screenNumber, grey); %, [0, 0, 400, 400]);
+
+        % Indicate to the user we might be busy
+        ShowCursor('SandClock');
 
         % Create individual rectangles, depending on the nRows and nCols
         % parameters
@@ -68,9 +66,8 @@ function showStimuli(par)
         end
         % --------------------------------------------------------------------
 
-        % Reset the cursor when before we start
-        set(figure, 'Pointer', 'arrow');
-        drawnow;
+        % Reset the cursor before we start
+        ShowCursor('Arrow');
 
         % --------------------------------------------------------------------
         % Trigger waiting loop
